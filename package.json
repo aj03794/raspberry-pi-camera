@@ -1,0 +1,26 @@
+{
+  "name": "raspberry-pi-camera",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "babel src --out-dir dist",
+    "start": "npm run build && node dist/index.js"
+  },
+  "keywords": [],
+  "author": "Adam Johnston",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1"
+  },
+  "babel": {
+    "presets": [
+      "env"
+    ]
+  },
+  "dependencies": {
+    "raspicam": "^0.2.14",
+    "redis": "^2.8.0"
+  }
+}
