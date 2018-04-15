@@ -1,6 +1,6 @@
 import { createClient } from 'redis'
 
-export const startRedis = () => {
+export const redisClient = () => {
 	console.log('Initiating redis connection')
 	const client = createClient(6379)
 
