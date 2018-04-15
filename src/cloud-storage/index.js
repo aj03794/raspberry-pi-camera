@@ -1,5 +1,5 @@
-import { sendToGcpStorage as sendToCloudStorage } from './gcp'
+import { gcpCloudStorage as gcp } from './gcp'
 
 export {
-	sendToCloudStorage
+	gcp
 }

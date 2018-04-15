@@ -1,6 +1,8 @@
-export const sendToGcpStorage = ({ photoLocation }) => new Promise((resolve, reject) => {
-	console.log('Sending to cloud storage', photoLocation)
-	return resolve({
-		upload: 'success'
-	})
-})
+export const gcpCloudStorage = () => {
+	return {
+		uploadPhoto: photoLocation => new Promise((resolve, reject) => {
+			console.log('Upload successful')
+			resolve()
+		})
+	}
+}

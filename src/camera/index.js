@@ -1,5 +1,5 @@
-import { raspiCam as createRaspicam } from './raspicam'
+import { raspicam } from './raspicam'
 
 export {
-	createRaspicam
+	raspicam
 }

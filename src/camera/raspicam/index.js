@@ -1,14 +1,7 @@
 // import RaspiCam from 'raspicam'
 import { resolve as resolvePath } from 'path'
 
-// const photoLocation = resolvePath()
-// const opts = {
-// 	mode: 'photo',
-// 	// Will need to make a folder that houses the pictures
-// 	output : resolvePath(__dirname)
-// }
-//
-// const camera = new RaspiCam({ opts });
+
 //
 // //to take a snapshot, start a timelapse or video recording
 // camera.start()
@@ -36,12 +29,31 @@ import { resolve as resolvePath } from 'path'
 // 	console.log('')
 // });
 
-export const raspiCam = () => {
+export const raspicam = () => {
+
+	// const camera = true
+	console.log(resolvePath(__dirname, 'pictures'))
+
+	const photoLocation = resolvePath()
+	const opts = {
+		mode: 'photo',
+		// Will need to make a folder that houses the pictures
+		output: resolvePath(__dirname, 'pictures', `${Date.now()}.jpg`)
+	}
+
+	const camera = new RaspiCam({ opts });
+
 	return {
 		takePhoto: () => new Promise((resolve, reject) => {
 			console.log('Taking photo')
+			// camera.start()
+			// camera.on("stop", () => {
+			// 	resolve({
+			// 		photoLocation: resolvePath(__dirname, 'pictures')
+			// 	})
+			// })
 			return resolve({
-				photoLocation: resolvePath(__dirname, '../', 'pictures')
+				photoLocation: resolvePath(__dirname, 'pictures')
 			})
 		})
 	}
