@@ -10,31 +10,31 @@ const dynamicImportPromises = [
 
 Promise.all(dynamicImportPromises)
 .then(functions => {
-    // const pubsub = functions[0][pubsubProvider]
+    const pubsub = functions[0][pubsubProvider]
     const cloudStorage = functions[1][cloudStorageProvider]
     const camera = functions[2][cameraProvider]
     return {
-        // pubsub,
+        pubsub,
         cloudStorage,
         camera
     }
 })
 .then(({
-    // pubsub,
+    pubsub,
     cloudStorage,
     camera
 }) => {
-    // const { client } = pubsub()
+    const { client } = pubsub()
     const { takePhoto } = camera()
     const { uploadPhoto } = cloudStorage()
-    // client.on('message', (channel, message) => {
-        // console.log("sub channel " + channel + ": " + message)
-        // if(JSON.parse(message).msg.motion) {
+    client.on('message', (channel, message) => {
+        console.log("sub channel " + channel + ": " + message)
+        if(JSON.parse(message).msg.motion) {
             return takePhoto()
             .then(uploadPhoto)
-        // }
-        // else {
-        //     console.log('No motion detected')
-        // }
-    // })
+        }
+        else {
+            console.log('No motion detected')
+        }
+    })
 })
