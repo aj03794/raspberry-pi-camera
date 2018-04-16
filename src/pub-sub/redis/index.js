@@ -26,6 +26,4 @@ export const redis = () => {
 
 	// return { client, motionSensorMonitor }
 	return { client }
-	console.log('Starting redis')
-
 }

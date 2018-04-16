@@ -30,7 +30,7 @@ Promise.all(dynamicImportPromises)
     client.on('message', (channel, message) => {
         console.log("sub channel " + channel + ": " + message)
         if(JSON.parse(message).msg.motion) {
-            takePhoto()
+            return takePhoto()
             .then(uploadPhoto)
         }
         else {
