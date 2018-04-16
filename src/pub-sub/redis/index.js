@@ -1,14 +1,35 @@
 import { createClient } from 'redis'
 
-export const redis = () => {
+const providerConfigParams = {
+	getPortParams: []
+}
+
+export const redis = ({
+	channel,
+	providerConfig: {
+		pubsub: {
+			getPort
+		}
+	}
+}) => {
 	// console.log('Initiating redis connection')
-	const client = createClient(6379)
+	const client = createClient(getPort(providerConfigParams))
 
-	client.on('connect', () => {
-		console.log('Connection to redis: success')
-	})
+	const {
+		subscribe: connection,
+		filter: filterConnection,
+		next: sendConnection
+	} = new Subject()
 
-	client.subscribe('motion sensor')
+	const {
+		subscribe: allMessages,
+		filter: filterMessages,
+		next: sendMessage
+	} = new Subject()
+
+	client.on('connect', () => sendConnection())
+
+	client.subscribe(channel)
 
 	client.on('error', err => {
 		console.log('Connection to redis: failure', err)
@@ -25,5 +46,13 @@ export const redis = () => {
 	// 	})
 
 	// return { client, motionSensorMonitor }
-	return { client }
+
+	return {
+		connection,
+		filterConnection,
+		sendConnection,
+		allMessages,
+		filterMessages,
+		sendMessage
+	}
 }
