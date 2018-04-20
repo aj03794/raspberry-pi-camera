@@ -2,7 +2,7 @@
 import { resolve as resolvePath } from 'path'
 import { exec } from 'child_process'
 
-export const raspicam = () => {
+export const raspicam = ({ publish, subscribe }) => {
 
 
     return {
