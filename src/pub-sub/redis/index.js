@@ -62,47 +62,48 @@ export const redis = () => ({
 		return resolve({
 			connect: () => c.connect()
 				.then(client => {
-					console.log('client', client)
-					console.log('channel', channel)
-					const z = client.subscribe('test')
-					console.log('z', z)
-					// const {
-					// 	subscribe: allMsgs,
-					// 	filter: filterMsgs,
-					// 	next
-					// } = createSubject()
-					// client.subscribe(channel)
-					// client.on('connection', (...args) => {
-					// 	client.on('message', (...args) => {
-                    //
-					// 		console.log('asdf', args)
-					// 		next({
-					// 			meta: {
-					// 				type: 'message',
-					// 				timestamp: new Date().getTime()
-					// 			},
-					// 			data: args //sanitize anything provider specific (redis)
-					// 		})
-					// 	})
-					// 	client.on('error', (...args) => next({
-					// 		meta: {
-					// 			type: 'error',
-					// 			timestamp: new Date().getTime(),
-					// 			data: args //sanitize anything provider specific (redis)
-					// 		}
-					// 	}))
-					// 	console.log('asdfda connection')
-					// 	next({
-					// 		meta: {
-					// 			type: 'connection',
-					// 			timestamp: new Date().getTime(),
-					// 			data: args //sanitize anything provider specific (redis)
-					// 		}
-					// 	})
-					// })
+					// console.log('client', client)
+					// console.log('channel', channel)
+					// const z = client.subscribe('test')
+					// console.log('z', z)
+					const {
+						subscribe: allMsgs,
+						filter: filterMsgs,
+						next
+					} = createSubject()
+					client.subscribe(channel)
+					client.on('connect', (...args) => {
+						console.log('Connected to Redis')
+						// ...args looks like [ 'motion sensor', '{"msg":{"motion":false}}' ]
+						client.on('message', (...args) => {
+							// console.log('asdf', args)
+							next({
+								meta: {
+									type: 'message',
+									timestamp: new Date().getTime()
+								},
+								data: args //sanitize anything provider specific (redis)
+							})
+						})
+						client.on('error', (...args) => next({
+							meta: {
+								type: 'error',
+								timestamp: new Date().getTime(),
+								data: args //sanitize anything provider specific (redis)
+							}
+						}))
+						// console.log('asdfda connection')
+						next({
+							meta: {
+								type: 'connect',
+								timestamp: new Date().getTime(),
+								data: args //sanitize anything provider specific (redis)
+							}
+						})
+					})
 					return {
-						allMsgs: () => 0,
-						filterMsgs: () => 1
+						allMsgs,
+						filterMsgs
 					}
 				})
 		})

@@ -1,34 +1,92 @@
 const cloudStorageProvider = process.env['cloudStorage'].toLowerCase()
 const pubsubProvider = process.env['pubsub'].toLowerCase()
-console.log('pubsubProvider', pubsubProvider)
 const cameraProvider = process.env['camera'].toLowerCase()
 
-const dynamicImportPromises = [
-    import(`./pub-sub`),
-    import(`./cloud-storage`),
-    import(`./camera`)
-]
+import(`./pub-sub`)
+    .then(({
+        [pubsubProvider]: pubsub
+    }) => pubsub())
+    .then(({
+        subscribe,
+        publish
+    }) => {
+        return Promise.all([
+            import(`./cloud-storage`),
+            import(`./camera`)
+        ])
+            .then(([
+                { [cloudStorageProvider]: cloudStorage },
+                { [cameraProvider]: camera }
+            ]) => {
+                const pubsubFunctions = {
+                    publish,
+                    subscribe
+                }
+                // console.log('cloudStorage', cloudStorage)
+                cloudStorage({ ...pubsubFunctions })
+                camera({ ...pubsubFunctions })
+            })
+            // .then(values => console.log('values', values))
+        }
+    )
+        // console.log('subscribe', subscribe)
+        // console.log('publish', publish)
+        // Promise.all(([
+        //     import(`./cloud-storage`),
+        //     import(`./camera`)
+        // ]).then(([
+        //         { [cloudStorageProvider]: cloudStorage },
+        //         { [cameraProvider]: camera }
+        //     ]) => {
+        //         const pubsubFunctions = {
+        //             publish,
+        //             subscribe
+        //         }
+        //         cloudStorage({ ...pubsubFunctions }),
+        //         camera({ ...pubsubFunctions })
+        //         return
+        //     })
+        //     .catch(err => {
+        //         console.log('err', err)
+        //     })
+        // )
+    // })
 
-Promise.all(dynamicImportPromises)
-.then(([
-    { [pubsubProvider]: pubsub },
-    // { [cloudStorageProvider]: cloudStorage },
-    // { [cameraProvider]: camera }
-]) => pubsub())
-.then(({
-    subscribe,
-    publish
-}) => {
-    subscribe({
-        channel: 'test'
-    })
-    .then(({ connect }) => connect())
-    .then(({ allMsgs, filterMsgs }) => {
-        console.log('allMsgs', allMsgs)
-        allMsgs()
-        // console.log('filter', filter)
-        // all()
-    })
+// Promise.all([
+//     import(`./pub-sub`)
+// ])
+// .then(([
+//     { [pubsubProvider]: pubsub },
+//     // { [cloudStorageProvider]: cloudStorage },
+//     // { [cameraProvider]: camera }
+// ]) => pubsub())
+// .then(({
+//     subscribe,
+//     publish
+// }) => {
+//     return Promise.all(([
+//         import(`./cloud-storage`),
+//         import(`./camera`)
+//     ])
+        // .then(([
+        //     { [cloudStorageProvider]: cloudStorage },
+        //     { [cameraProvider]: camera }
+        // ]) => {
+        //     const pubsubFunctions = {
+        //         publish,
+        //         subscribe
+        //     }
+        //     cloudStorage({ ...pubsubFunctions }),
+        //     camera({ ...pubsubFunctions })
+        //     return
+        // })
+        // .catch(err => {
+        //     console.log('err', err)
+        // })
+//     )
+// })
+
+    // })
         // .then(({ all, filter }) => {
         //     all((...args) => {
         //         console.log('called', args)
@@ -46,7 +104,9 @@ Promise.all(dynamicImportPromises)
 
     // camera({ publish, subscribe })
     // cloudStorage({ publish, subscribe })
-})
+// })
+
+
 
 
 

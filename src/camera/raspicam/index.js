@@ -3,24 +3,42 @@ import { resolve as resolvePath } from 'path'
 import { exec } from 'child_process'
 
 export const raspicam = ({ publish, subscribe }) => {
+    console.log('-------------------------')
+    console.log('raspicam')
 
-
-    return {
-        takePhoto: () => new Promise((resolve, reject) => {
-            console.log('Taking photo')
-            exec(`raspistill -q 75 --mode 3 --output cam.jpg`,
-                {
-                    cwd: resolvePath(__dirname)
-                },
-                (err, stdout, stderr) => {
-                    if (err) {
-                        console.log('Something went wrong', err)
-                        return reject({ message: 'Something went wrong uploading' })
+    subscribe({
+        channel: 'motion sensor'
+    })
+    .then(({ connect }) => connect())
+    .then(({ allMsgs, filterMsgs }) => {
+        filterMsgs(msg => {
+            return true
+        }).subscribe(msg => {
+            console.log('filteredMsg', msg)
+            publish().then(({ connect }) => connect())
+                .then(({ send }) => send({
+                    channel: 'cloud storage',
+                    data: {
+                        some: 'data'
                     }
-                    console.log(stdout)
-                    return resolve({ msg: 'Picture taken successfully' })
-                }
-            )
+                }))
         })
-    }
+    })
 }
+
+const takePhoto = () => new Promise((resolve, reject) => {
+    console.log('Taking photo')
+    exec(`raspistill -q 75 --mode 3 --output cam.jpg`,
+        {
+            cwd: resolvePath(__dirname)
+        },
+        (err, stdout, stderr) => {
+            if (err) {
+                console.log('Something went wrong', err)
+                return reject({ message: 'Something went wrong uploading' })
+            }
+            console.log(stdout)
+            return resolve({ msg: 'Picture taken successfully' })
+        }
+    )
+})
