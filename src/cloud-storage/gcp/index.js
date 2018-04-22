@@ -1,3 +1,10 @@
+import { get } from 'lodash/fp'
+import { flow } from 'lodash'
+import Storage from '@google-cloud/storage'
+import { resolve as resolvePath } from 'path'
+import { createGcpBucket,  checkIfBucketExists } from './bucket-operations'
+import { uploadFile } from './file-operations'
+
 export const gcpCloudStorage = ({ publish, subscribe }) => {
 
 	console.log('-------------------------')
@@ -8,21 +15,45 @@ export const gcpCloudStorage = ({ publish, subscribe }) => {
 	})
 	.then(({ connect }) => connect())
 	.then(({ allMsgs, filterMsgs }) => {
-		allMsgs(msg => console.log('gcp all msgs', msg))
-		// console.log('cloudStorage', cloudStorage)
-		// const filteredMsgs = filterMsgs(msg => {
-		// 	return JSON.parse(msg)
-		// }).subscribe(msg => console.log('filteredMsg', msg))
+		filterMsgs(msg => {
+			return msg.data
+		}).subscribe(msg => {
+			doPhotoUpload({
+				msg
+			}).then(() => {
+				return
+			})
+		})
 	})
 }
 
-export const uploadPhoto = photoLocation => new Promise((resolve, reject) => {
-	console.log('Upload successful')
-	resolve({
-		meta: {},
-		data: {
-			cloudProvider: 'gcp',
-			upload: 'successful'
+export const doPhotoUpload = ({ msg }) => new Promise((resolve, reject) => {
+	console.log('------------------------------')
+	console.log('doPhotoUpload')
+	const bucketName = 'smart-hms-photos'
+	const { location, name: file } = JSON.parse(msg.data[1])
+	const storage = new Storage({
+		projectId: process.env.GCP_PROJECT_ID
+	})
+	checkIfBucketExists({ storage, bucketName })
+	.then(bucket => {
+		if (!bucket) {
+			console.log('Bucket does not exist')
+			return createGcpBucket({ storage, bucketName })
+			.catch(err => reject(err))
 		}
+		console.log('Bucket exists')
+		return
+	})
+	.then(() => uploadFile({ storage, bucketName, file, location }))
+	.then(() => {
+		console.log('Upload successful')
+		resolve({
+			meta: {},
+			data: {
+				cloudProvider: 'gcp',
+				upload: 'successful'
+			}
+		})
 	})
 })

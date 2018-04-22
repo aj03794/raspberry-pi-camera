@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "babel src --out-dir dist",
+    "build": "rm -rf dist && babel src --out-dir dist",
     "start": "npm run build && node -r dotenv/config dist/index.js"
   },
   "keywords": [],
@@ -28,7 +28,10 @@
     ]
   },
   "dependencies": {
+    "@google-cloud/storage": "^1.6.0",
     "create-subject-with-filter": "0.0.5",
+    "fs-extra": "^5.0.0",
+    "lodash": "^4.17.5",
     "raspicam": "^0.2.14",
     "redis": "^2.8.0"
   }

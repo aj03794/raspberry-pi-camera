@@ -22,14 +22,12 @@ const clients = {} // inject this to manage scope
 
 const getClient = ({ type }) => ({
 	connect: () => new Promise(resolve => {
-		console.log('getClient type', type)
 		if (!clients[type]) {
 			setClient({
 				type,
 				client: createClient(6379)
 			})
 		}
-		// console.log('getClient clients[type]', clients[type])
 		return resolve(clients[type])
 	})
 })
@@ -58,14 +56,9 @@ export const redis = () => ({
 	}),
 	subscribe: ({ channel }) => new Promise(resolve => {
 		const c = getClient({ type: channel })
-		// console.log('c', c.connect().then(client => console.log('client', client)))
 		return resolve({
 			connect: () => c.connect()
 				.then(client => {
-					// console.log('client', client)
-					// console.log('channel', channel)
-					// const z = client.subscribe('test')
-					// console.log('z', z)
 					const {
 						subscribe: allMsgs,
 						filter: filterMsgs,
@@ -76,7 +69,7 @@ export const redis = () => ({
 						console.log('Connected to Redis')
 						// ...args looks like [ 'motion sensor', '{"msg":{"motion":false}}' ]
 						client.on('message', (...args) => {
-							// console.log('asdf', args)
+							// console.log('args', args)
 							next({
 								meta: {
 									type: 'message',
