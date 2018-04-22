@@ -26,15 +26,15 @@ export const raspicam = ({ publish, subscribe }) => {
             .then(({
                 data: { location, name }
             }) => {
-                publish()
-                    .then(({ connect }) => connect())
-                    .then(({ send }) => send({
-                        channel: 'cloud storage',
-                        data: {
-                            location,
-                            name
-                        }
-                    }))
+                // publish()
+                //     .then(({ connect }) => connect())
+                //     .then(({ send }) => send({
+                //         channel: 'cloud storage',
+                //         data: {
+                //             location,
+                //             name
+                //         }
+                //     }))
             })
         })
     })
@@ -48,7 +48,7 @@ const takePhoto = () => new Promise((resolve, reject) => {
     // writeFileSync(`${location}/${name}`)
     exec(`raspistill -q 75 --mode 3 --output ${name}`,
         {
-            cwd: photoLocation
+            cwd: location
         },
         (err, stdout, stderr) => {
             if (err) {
