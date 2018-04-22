@@ -45,25 +45,26 @@ const takePhoto = () => new Promise((resolve, reject) => {
     const location = resolvePath(__dirname, 'pictures')
     ensureDirSync(location)
     const name = `${Date.now()}.jpg`
-    writeFileSync(`${location}/${name}`)
-    // exec(`raspistill -q 75 --mode 3 --output ${name}`,
-    //     {
-    //         cwd: photoLocation
-    //     },
-    //     (err, stdout, stderr) => {
-    //         if (err) {
-    //             console.log('Something went wrong', err)
-    //             return reject({ message: 'Something went wrong uploading' })
-    //         }
-    //         console.log(stdout)
-    //         return resolve({ msg: 'Picture taken successfully' })
-    //     }
-    // )
-    resolve({
-        meta: {},
-        data: {
-            location,
-            name
+    // writeFileSync(`${location}/${name}`)
+    exec(`raspistill -q 75 --mode 3 --output ${name}`,
+        {
+            cwd: photoLocation
+        },
+        (err, stdout, stderr) => {
+            if (err) {
+                console.log('Something went wrong', err)
+                return reject({ message: 'Picture could not be taken' })
+            }
+            console.log(stdout)
+            // return resolve({ msg: 'Picture taken successfully' })
+            resolve({
+                meta: {},
+                data: {
+                    location,
+                    name,
+                    msg: 'Picture taken successfully'
+                }
+            })
         }
-    })
+    )
 })

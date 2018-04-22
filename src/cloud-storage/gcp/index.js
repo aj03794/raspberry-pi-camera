@@ -5,7 +5,6 @@ import { createGcpBucket,  checkIfBucketExists } from './bucket-operations'
 import { uploadFile } from './file-operations'
 
 export const gcpCloudStorage = ({ publish, subscribe }) => {
-
 	console.log('-------------------------')
 	console.log('gcpCloudStorage')
 
@@ -27,7 +26,7 @@ export const gcpCloudStorage = ({ publish, subscribe }) => {
 }
 
 export const doPhotoUpload = ({ msg }) => new Promise((resolve, reject) => {
-	console.log('------------------------------')
+	console.log('-------------------------')
 	console.log('doPhotoUpload')
 	const bucketName = process.env.FOLDER_NAME
 	const { location, name: file } = JSON.parse(msg.data[1])
