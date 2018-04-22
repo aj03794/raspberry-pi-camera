@@ -1,7 +1,6 @@
 import { get } from 'lodash/fp'
 import { flow } from 'lodash'
 import Storage from '@google-cloud/storage'
-import { resolve as resolvePath } from 'path'
 import { createGcpBucket,  checkIfBucketExists } from './bucket-operations'
 import { uploadFile } from './file-operations'
 
@@ -30,7 +29,7 @@ export const gcpCloudStorage = ({ publish, subscribe }) => {
 export const doPhotoUpload = ({ msg }) => new Promise((resolve, reject) => {
 	console.log('------------------------------')
 	console.log('doPhotoUpload')
-	const bucketName = 'smart-hms-photos'
+	const bucketName = process.env.FOLDER_NAME
 	const { location, name: file } = JSON.parse(msg.data[1])
 	const storage = new Storage({
 		projectId: process.env.GCP_PROJECT_ID
