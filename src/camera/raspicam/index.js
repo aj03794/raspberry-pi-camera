@@ -4,6 +4,7 @@ import { ensureDirSync } from 'fs-extra'
 import { exec } from 'child_process'
 import { get } from 'lodash/fp'
 import { writeFileSync } from 'fs'
+import { managePhotos } from './manage-photos'
 
 export const raspicam = ({ publish, subscribe }) => {
     console.log('-------------------------')
@@ -35,7 +36,9 @@ export const raspicam = ({ publish, subscribe }) => {
                 //             name
                 //         }
                 //     }))
+                return { location }
             })
+            .then(managePhotos)
         })
     })
 }
@@ -46,8 +49,9 @@ const takePhoto = () => new Promise((resolve, reject) => {
     ensureDirSync(location)
     // const name = `${Date.now()}.jpg`
     const date = new Date()
-    const name = `${date.getMonth()}-${date.getDate()}-${date.getFullYear()}-${date.getHours()}:${date.getMinutes()}`
+    const name = `${date.getMonth()}-${date.getDate()}-${date.getFullYear()}-${date.getHours()}:${date.getMinutes()}::${date.getSeconds()}.jpg`
     writeFileSync(`${location}/${name}`)
+
     // exec(`raspistill -q 75 --mode 3 --output ${name}`,
     //     {
     //         cwd: location
