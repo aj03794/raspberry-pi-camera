@@ -26,15 +26,15 @@ export const raspicam = ({ publish, subscribe }) => {
             .then(({
                 data: { location, name }
             }) => {
-                publish()
-                    .then(({ connect }) => connect())
-                    .then(({ send }) => send({
-                        channel: 'cloud storage',
-                        data: {
-                            location,
-                            name
-                        }
-                    }))
+                // publish()
+                //     .then(({ connect }) => connect())
+                //     .then(({ send }) => send({
+                //         channel: 'cloud storage',
+                //         data: {
+                //             location,
+                //             name
+                //         }
+                //     }))
             })
         })
     })
@@ -44,11 +44,13 @@ const takePhoto = () => new Promise((resolve, reject) => {
     // console.log('Taking photo')
     const location = resolvePath(__dirname, 'pictures')
     ensureDirSync(location)
-    const name = `${Date.now()}.jpg`
+    // const name = `${Date.now()}.jpg`
+    const date = new Date()
+    const name = `${date.getMonth()}-${date.getDate()}-${date.getFullYear()}-${date.getHours()}:${date.getMinutes()}`
     writeFileSync(`${location}/${name}`)
     // exec(`raspistill -q 75 --mode 3 --output ${name}`,
     //     {
-    //         cwd: photoLocation
+    //         cwd: location
     //     },
     //     (err, stdout, stderr) => {
     //         if (err) {
@@ -57,14 +59,24 @@ const takePhoto = () => new Promise((resolve, reject) => {
     //         }
     //         console.log(stdout)
             // return resolve({ msg: 'Picture taken successfully' })
-            resolve({
-                meta: {},
-                data: {
-                    location,
-                    name,
-                    msg: 'Picture taken successfully'
-                }
-            })
+            // resolve({
+            //     meta: {},
+            //     data: {
+            //         location,
+            //         name,
+            //         msg: 'Picture taken successfully'
+            //     }
+            // })
         // }
     // )
+    setTimeout(() => {
+        resolve({
+            meta: {},
+            data: {
+                location,
+                name,
+                msg: 'Picture taken successfully'
+            }
+        })
+    }, 1000)
 })
