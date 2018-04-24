@@ -1,15 +1,10 @@
 // import RaspiCam from 'raspicam'
 import { resolve as resolvePath } from 'path'
-import { ensureDirSync } from 'fs-extra'
-import { exec } from 'child_process'
 import { get } from 'lodash/fp'
 import { writeFileSync } from 'fs'
 import { managePhotos } from './manage-photos'
 
 export const raspicam = ({ publish, subscribe }) => {
-    console.log('-------------------------')
-    console.log('raspicam')
-
     subscribe({
         channel: 'motion sensor'
     })
@@ -23,7 +18,7 @@ export const raspicam = ({ publish, subscribe }) => {
             return false
         }).subscribe(msg => {
             console.log('filteredMsg - raspicam', msg)
-            takePhoto()
+            takePhoto({ date: new Date() })
             .then(({
                 data: { location, name }
             }) => {
@@ -43,44 +38,30 @@ export const raspicam = ({ publish, subscribe }) => {
     })
 }
 
-const takePhoto = () => new Promise((resolve, reject) => {
-    // console.log('Taking photo')
+const takePhoto = ({ date }) => new Promise((resolve, reject) => {
     const location = resolvePath(__dirname, 'pictures')
-    ensureDirSync(location)
-    // const name = `${Date.now()}.jpg`
-    const date = new Date()
     const name = `${date.getMonth()}-${date.getDate()}-${date.getFullYear()}-${date.getHours()}:${date.getMinutes()}::${date.getSeconds()}.jpg`
-    writeFileSync(`${location}/${name}`)
-
-    // exec(`raspistill -q 75 --mode 3 --output ${name}`,
-    //     {
-    //         cwd: location
-    //     },
-    //     (err, stdout, stderr) => {
-    //         if (err) {
-    //             console.log('Something went wrong', err)
-    //             return reject({ message: 'Picture could not be taken' })
-    //         }
-    //         console.log(stdout)
-            // return resolve({ msg: 'Picture taken successfully' })
-            // resolve({
-            //     meta: {},
-            //     data: {
-            //         location,
-            //         name,
-            //         msg: 'Picture taken successfully'
-            //     }
-            // })
-        // }
-    // )
-    setTimeout(() => {
-        resolve({
-            meta: {},
-            data: {
-                location,
-                name,
-                msg: 'Picture taken successfully'
-            }
-        })
-    }, 1000)
+    return ensureDirExists({ location })
+    .then(({ location }) => {
+        return process.argv[2] === 'dev'
+            ? fakePhoto({ location, name, msgToSend })
+            : realPhoto({ location, name, msgToSend })
+    })
+    .then(() => resolve())
 })
+
+export const ensureDirExists = ({ location }) => new Promise((resolve, reject) => {
+    ensureDirSync(location)
+    return resolve()
+})
+
+export const msgToSend = ({ location, name }) => {
+    return {
+        meta: {},
+        data: {
+            location,
+            name,
+            msg: 'Picture taken successfully'
+        }
+    }
+}
