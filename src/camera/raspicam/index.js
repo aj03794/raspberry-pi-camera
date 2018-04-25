@@ -1,8 +1,10 @@
 // import RaspiCam from 'raspicam'
 import { resolve as resolvePath } from 'path'
 import { get } from 'lodash/fp'
-import { writeFileSync } from 'fs'
+import { ensureDirSync } from 'fs-extra'
 import { managePhotos } from './manage-photos'
+import { doFakePhoto, doRealPhoto } from './photo'
+// import { writeFileSync } from 'fs-extra'
 
 export const raspicam = ({ publish, subscribe }) => {
     subscribe({
@@ -20,8 +22,12 @@ export const raspicam = ({ publish, subscribe }) => {
             console.log('filteredMsg - raspicam', msg)
             takePhoto({ date: new Date() })
             .then(({
-                data: { location, name }
+                location,
+                name
             }) => {
+            // .then(msg => {
+                console.log('location', location)
+                console.log('Name', name)
                 // publish()
                 //     .then(({ connect }) => connect())
                 //     .then(({ send }) => send({
@@ -31,9 +37,9 @@ export const raspicam = ({ publish, subscribe }) => {
                 //             name
                 //         }
                 //     }))
-                return { location }
+                // return { location }
             })
-            .then(managePhotos)
+            // .then(managePhotos)
         })
     })
 }
@@ -44,15 +50,15 @@ const takePhoto = ({ date }) => new Promise((resolve, reject) => {
     return ensureDirExists({ location })
     .then(({ location }) => {
         return process.argv[2] === 'dev'
-            ? fakePhoto({ location, name, msgToSend })
-            : realPhoto({ location, name, msgToSend })
+            ? doFakePhoto({ location, name, msgToSend })
+            : doRealPhoto({ location, name, msgToSend })
     })
-    .then(() => resolve())
+    .then(({ data: { location, name } }) => resolve({ location, name }))
 })
 
 export const ensureDirExists = ({ location }) => new Promise((resolve, reject) => {
     ensureDirSync(location)
-    return resolve()
+    return resolve({ location })
 })
 
 export const msgToSend = ({ location, name }) => {
