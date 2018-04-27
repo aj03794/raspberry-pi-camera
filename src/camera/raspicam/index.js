@@ -28,23 +28,23 @@ export const raspicam = ({ publish, subscribe }) => {
             // .then(msg => {
                 console.log('location', location)
                 console.log('Name', name)
-                // publish()
-                //     .then(({ connect }) => connect())
-                //     .then(({ send }) => send({
-                //         channel: 'cloud storage',
-                //         data: {
-                //             location,
-                //             name
-                //         }
-                //     }))
-                // return { location }
+                publish()
+                    .then(({ connect }) => connect())
+                    .then(({ send }) => send({
+                        channel: 'cloud storage',
+                        data: {
+                            location,
+                            name
+                        }
+                    }))
+                return { location }
             })
-            // .then(managePhotos)
+            .then(managePhotos)
         })
     })
 }
 
-const takePhoto = ({ date }) => new Promise((resolve, reject) => {
+export const takePhoto = ({ date }) => new Promise((resolve, reject) => {
     const location = resolvePath(__dirname, 'pictures')
     const name = `${date.getMonth()}-${date.getDate()}-${date.getFullYear()}-${date.getHours()}:${date.getMinutes()}::${date.getSeconds()}.jpg`
     return ensureDirExists({ location })
