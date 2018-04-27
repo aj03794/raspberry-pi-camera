@@ -1,35 +1,38 @@
-import { writeFile, mkdir as makeDir, ensureDir, readdir as readDir, copyFile } from 'fs-extra'
-import { resolve as resolvePath } from 'path'
+import { writeFile, mkdir as makeDir, ensureDir, readdir as readDir, copy } from 'fs-extra'
+import { resolve as resolvePath, basename } from 'path'
 
 
 export const Storage = ({
 	projectId
 }) => {
-	const folder = folderName => {
-		// console.log('')
-		console.log('folderName', folderName)
-		return folderName
+	const bucket = bucketName => {
+		console.log('bucketName', bucketName)
+		return bucketName
 	}
 
-	const upload = ({ fileName, folderName }) => new Promise((resolve, reject) => {
-		console.log('====>', resolvePath(fileName))
-		return copyFile(resolvePath(fileName), resolvePath(__dirname, folderName), err => {
+	const upload = ({ fileName, bucketName }) => new Promise((resolve, reject) => {
+		const destination = resolvePath(__dirname, 'buckets', bucketName, 'example.jpg')
+		const src = resolvePath(fileName)
+		const newFileName = basename(src)
+		console.log('destFileName', destFileName)
+		return copy(src, destination, err => {
 			if (err) {
 				console.log('Err uploading file - local', err)
-				reject(err)
+				return reject(err)
 			}
+			console.log('Success!')
 			return resolve()
 		})
 	})
 
-	const getFolders = () => new Promise((resolve, reject) => {
-		return ensureDir(resolvePath(__dirname, 'folders'))
+	const getBuckets = () => new Promise((resolve, reject) => {
+		return ensureDir(resolvePath(__dirname, 'buckets'))
 			.then(() => {
-				return readDir(resolvePath(__dirname, 'folders'), (err, files) => {
+				return readDir(resolvePath(__dirname, 'buckets'), (err, files) => {
 					if (err) {
-						console.log('Err getFolders - local', err)
+						console.log('Err getBuckets - local', err)
 						return reject({
-							method: 'getFolders',
+							method: 'getBuckets',
 							data: {
 								err
 							}
@@ -38,15 +41,15 @@ export const Storage = ({
 					return resolve(files)
 				})
 			})
-			.catch(err => console.log('getFolders - err', err))
+			.catch(err => console.log('getBuckets - err', err))
 	})
 
-	const createFolder = (folderName) => new Promise((resolve, reject) => {
-		return makeDir(resolvePath(__dirname, 'folders', folderName), err => {
+	const createBucket = (bucketName) => new Promise((resolve, reject) => {
+		return makeDir(resolvePath(__dirname, 'buckets', bucketName), err => {
 			if (err) {
 				console.log('Error creating bucket - local', err)
 				return reject({
-					method: 'createFolder',
+					method: 'createBucket',
 					data: {
 						err
 					}
@@ -58,10 +61,10 @@ export const Storage = ({
 
 
 	return {
-		folder,
+		bucket,
 		upload,
-		getFolders,
-		createFolder
+		getBuckets,
+		createBucket
 	}
 
 }

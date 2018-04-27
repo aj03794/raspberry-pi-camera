@@ -28,7 +28,7 @@ export const gcpCloudStorage = ({ publish, subscribe }) => {
 export const doPhotoUpload = ({ msg }) => new Promise((resolve, reject) => {
 	console.log('-------------------------')
 	console.log('doPhotoUpload - GCP')
-	const bucketName = process.env.FOLDER_NAME
+	const bucketName = process.env.BUCKET_NAME
 	const { location, name: file } = JSON.parse(msg.data[1])
 	const storage = new Storage({
 		projectId: process.env.GCP_PROJECT_ID

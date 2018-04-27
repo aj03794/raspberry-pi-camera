@@ -1,16 +1,16 @@
 import { resolve as resolvePath } from 'path'
 
-export const uploadFile = ({ storage, folderName, file, location }) => new Promise((resolve, reject) => {
+export const uploadFile = ({ storage, bucketName, file, location }) => new Promise((resolve, reject) => {
 	const fileName = resolvePath(`${location}/${file}`)
 	// console.log('fileName')
 	// console.log('asdfasf', storage.folder(folderName).upload())
 	return storage
     // .folder(folderName)
-    .upload({ fileName, folderName })
+    .upload({ fileName, bucketName })
     .then(() => {
-      console.log(`${file} uploaded to ${folderName}.`);
+      console.log(`${file} uploaded to ${bucketName}.`);
 	  resolve({
-		  msg: `${file} uploaded to ${folderName}`
+		  msg: `${file} uploaded to ${bucketName}`
 	  })
     })
     .catch(err => {
