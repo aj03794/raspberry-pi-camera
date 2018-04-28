@@ -2,7 +2,6 @@
 // Need some sort of naming convention
 
 import { createClient } from 'redis'
-// import { Subject } from 'rxjs'
 import { createSubject } from 'create-subject-with-filter'
 
 const providerConfigParams = {
@@ -55,7 +54,9 @@ export const redis = () => ({
 		})
 	}),
 	subscribe: ({ channel }) => new Promise(resolve => {
+		console.log('HELLO')
 		const c = getClient({ type: channel })
+		console.log('ANOTHER')
 		return resolve({
 			connect: () => c.connect()
 				.then(client => {
@@ -65,6 +66,16 @@ export const redis = () => ({
 						next
 					} = createSubject()
 					client.subscribe(channel)
+					client.on('error', (...args) => {
+						console.log('ERROR OCCURRED', args)
+						next({
+							meta: {
+								type: 'error',
+								timestamp: new Date().getTime(),
+								data: args //sanitize anything provider specific (redis)
+							}
+						})
+					})
 					client.on('connect', (...args) => {
 						console.log('Connected to Redis')
 						// ...args looks like [ 'motion sensor', '{"msg":{"motion":false}}' ]
@@ -78,13 +89,16 @@ export const redis = () => ({
 								data: args //sanitize anything provider specific (redis)
 							})
 						})
-						client.on('error', (...args) => next({
-							meta: {
-								type: 'error',
-								timestamp: new Date().getTime(),
-								data: args //sanitize anything provider specific (redis)
-							}
-						}))
+						client.on('error', (...args) => {
+							console.log('ERROR OCCURRED', error)
+							next({
+								meta: {
+									type: 'error',
+									timestamp: new Date().getTime(),
+									data: args //sanitize anything provider specific (redis)
+								}
+							})
+						})
 						// console.log('asdfda connection')
 						next({
 							meta: {

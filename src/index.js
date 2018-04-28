@@ -6,6 +6,9 @@ import(`./pub-sub`)
     .then(({
         [pubsubProvider]: pubsub
     }) => pubsub())
+    .catch(err => {
+        console.log('ASDFASFSAFFASDFFASF', err)
+    })
     .then(({
         subscribe,
         publish
