@@ -28,13 +28,9 @@ export const doPhotoUpload = ({ msg }) => new Promise((resolve, reject) => {
 	console.log('doPhotoUpload - local')
 	const bucketName = process.env.BUCKET_NAME
 	const { location, name: file } = JSON.parse(msg.data[1])
-	// const storage = new Storage({
-	// 	projectId: process.env.GCP_PROJECT_ID
-	// })
 	const storage = new Storage({
 		projectId: process.env.PROJECT_ID
 	})
-	console.log('storage', storage)
 	checkIfBucketExists({ storage, bucketName })
 	.then(bucket => {
 		if (!bucket) {

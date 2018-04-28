@@ -27,7 +27,7 @@ export function Storage({ projectId }) {
 	this.getBuckets = () => new Promise((resolve, reject) => {
 		return ensureDir(resolvePath(__dirname, 'buckets'))
 			.then(() => {
-				return readDir(resolvePath(__dirname, 'buckets'), (err, files) => {
+				return readDir(resolvePath(__dirname, 'buckets'), (err, buckets) => {
 					if (err) {
 						console.log('Err getBuckets - local', err)
 						return reject({
@@ -37,7 +37,14 @@ export function Storage({ projectId }) {
 							}
 						})
 					}
-					return resolve(files)
+					return resolve(buckets.map(bucket => {
+						return {
+							metadata: {
+								id: bucket
+							}
+						}
+					}))
+					// return resolve(files)
 				})
 			})
 			.catch(err => console.log('getBuckets - err', err))

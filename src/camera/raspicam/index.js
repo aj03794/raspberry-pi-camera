@@ -25,9 +25,6 @@ export const raspicam = ({ publish, subscribe }) => {
                 location,
                 name
             }) => {
-            // .then(msg => {
-                console.log('location', location)
-                console.log('Name', name)
                 publish()
                     .then(({ connect }) => connect())
                     .then(({ send }) => send({
