@@ -1,12 +1,10 @@
-import { get } from 'lodash/fp'
-import { flow } from 'lodash'
-import Storage from '@google-cloud/storage'
-import { createGcpBucket,  checkIfBucketExists } from './bucket-operations'
+import { Storage } from './storage'
+import { checkIfBucketExists, createBucket } from './bucket-operations'
 import { uploadFile } from './file-operations'
 
-export const gcpCloudStorage = ({ publish, subscribe }) => {
+export const localStorage = ({ publish, subscribe }) => {
 	console.log('-------------------------')
-	console.log('gcpCloudStorage')
+	console.log('localCloudStorage')
 
 	subscribe({
 		channel: 'cloud storage'
@@ -27,17 +25,17 @@ export const gcpCloudStorage = ({ publish, subscribe }) => {
 
 export const doPhotoUpload = ({ msg }) => new Promise((resolve, reject) => {
 	console.log('-------------------------')
-	console.log('doPhotoUpload - GCP')
+	console.log('doPhotoUpload - local')
 	const bucketName = process.env.BUCKET_NAME
 	const { location, name: file } = JSON.parse(msg.data[1])
 	const storage = new Storage({
-		projectId: process.env.GCP_PROJECT_ID
+		projectId: process.env.PROJECT_ID
 	})
 	checkIfBucketExists({ storage, bucketName })
 	.then(bucket => {
 		if (!bucket) {
 			console.log('Bucket does not exist')
-			return createGcpBucket({ storage, bucketName })
+			return createBucket({ storage, bucketName })
 			.catch(err => reject(err))
 		}
 		console.log('Bucket exists')
@@ -49,7 +47,7 @@ export const doPhotoUpload = ({ msg }) => new Promise((resolve, reject) => {
 		resolve({
 			meta: {},
 			data: {
-				cloudProvider: 'gcp',
+				cloudProvider: 'local',
 				upload: 'successful'
 			}
 		})
