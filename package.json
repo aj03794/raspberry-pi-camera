@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@google-cloud/storage": "^1.6.0",
+    "async": "^2.6.0",
     "create-subject-with-filter": "0.0.5",
     "fs-extra": "^5.0.0",
     "lodash": "^4.17.5",

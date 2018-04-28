@@ -4,7 +4,6 @@ import { get } from 'lodash/fp'
 import { ensureDirSync } from 'fs-extra'
 import { managePhotos } from './manage-photos'
 import { doFakePhoto, doRealPhoto } from './photo'
-// import { writeFileSync } from 'fs-extra'
 
 export const raspicam = ({ publish, subscribe }) => {
     subscribe({
