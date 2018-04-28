@@ -1,4 +1,4 @@
-export const createGcpBucket = ({ storage, bucketName }) => new Promise((resolve, reject) => {
+export const createBucket = ({ storage, bucketName }) => new Promise((resolve, reject) => {
 	return storage
   .createBucket(bucketName)
   .then(() => {
@@ -8,11 +8,6 @@ export const createGcpBucket = ({ storage, bucketName }) => new Promise((resolve
   .catch(err => {
     console.error('ERROR:', err);
   })
-  // setTimeout(() => {
-	//   resolve({
-	// 	  msg: 'Bucket created'
-	//   })
-  // }, 500)
 })
 
 export const checkIfBucketExists = ({ storage, bucketName }) => new Promise((resolve, reject) => {
@@ -32,5 +27,5 @@ export const checkIfBucketExists = ({ storage, bucketName }) => new Promise((res
 			})[0]
 			return resolve(bucket ? bucket : null)
 		})
-		.catch(err => console.log('err retrieving GCP buckets', err))
+		.catch(err => console.log('err retrieving buckets', err))
 })

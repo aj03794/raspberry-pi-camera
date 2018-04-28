@@ -31,9 +31,10 @@ export const doPhotoUpload = ({ msg }) => new Promise((resolve, reject) => {
 	// const storage = new Storage({
 	// 	projectId: process.env.GCP_PROJECT_ID
 	// })
-	const storage = Storage({
+	const storage = new Storage({
 		projectId: process.env.PROJECT_ID
 	})
+	console.log('storage', storage)
 	checkIfBucketExists({ storage, bucketName })
 	.then(bucket => {
 		if (!bucket) {

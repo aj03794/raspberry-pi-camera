@@ -2,18 +2,17 @@ import { writeFile, mkdir as makeDir, ensureDir, readdir as readDir, copy } from
 import { resolve as resolvePath, basename } from 'path'
 
 
-export const Storage = ({
-	projectId
-}) => {
-	const bucket = bucketName => {
-		console.log('bucketName', bucketName)
-		return bucketName
+export function Storage({ projectId }) {
+
+	this.bucket = bucketName => {
+		this.bucketName = bucketName
+		return this
 	}
 
-	const upload = ({ fileName, bucketName }) => new Promise((resolve, reject) => {
-		const destination = resolvePath(__dirname, 'buckets', bucketName, 'example.jpg')
+	this.upload = (fileName) => new Promise((resolve, reject) => {
 		const src = resolvePath(fileName)
-		const newFileName = basename(src)
+		const destFileName = basename(src)
+		const destination = resolvePath(__dirname, 'buckets', this.bucketName, destFileName)
 		console.log('destFileName', destFileName)
 		return copy(src, destination, err => {
 			if (err) {
@@ -25,7 +24,7 @@ export const Storage = ({
 		})
 	})
 
-	const getBuckets = () => new Promise((resolve, reject) => {
+	this.getBuckets = () => new Promise((resolve, reject) => {
 		return ensureDir(resolvePath(__dirname, 'buckets'))
 			.then(() => {
 				return readDir(resolvePath(__dirname, 'buckets'), (err, files) => {
@@ -44,7 +43,7 @@ export const Storage = ({
 			.catch(err => console.log('getBuckets - err', err))
 	})
 
-	const createBucket = (bucketName) => new Promise((resolve, reject) => {
+	this.createBucket = (bucketName) => new Promise((resolve, reject) => {
 		return makeDir(resolvePath(__dirname, 'buckets', bucketName), err => {
 			if (err) {
 				console.log('Error creating bucket - local', err)
@@ -58,13 +57,5 @@ export const Storage = ({
 			return resolve()
 		})
 	})
-
-
-	return {
-		bucket,
-		upload,
-		getBuckets,
-		createBucket
-	}
 
 }

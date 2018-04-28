@@ -1,12 +1,11 @@
 import { resolve as resolvePath } from 'path'
 
 export const uploadFile = ({ storage, bucketName, file, location }) => new Promise((resolve, reject) => {
+	console.log('storage', storage)
 	const fileName = resolvePath(`${location}/${file}`)
-	// console.log('fileName')
-	// console.log('asdfasf', storage.folder(folderName).upload())
 	return storage
-    // .folder(folderName)
-    .upload({ fileName, bucketName })
+	.bucket(bucketName)
+    .upload(fileName)
     .then(() => {
       console.log(`${file} uploaded to ${bucketName}.`);
 	  resolve({
@@ -20,9 +19,4 @@ export const uploadFile = ({ storage, bucketName, file, location }) => new Promi
 		  err
 	  })
     })
-	// setTimeout(() => {
-	// 	resolve({
-	// 		msg: 'Uploading successful'
-	// 	})
-	// }, 500)
 })

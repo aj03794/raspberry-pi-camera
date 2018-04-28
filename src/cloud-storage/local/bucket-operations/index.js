@@ -16,17 +16,17 @@ export const checkIfBucketExists = ({ storage, bucketName }) => new Promise((res
 		.then(buckets => {
 			console.log('buckets', buckets)
 			const bucket = buckets.filter(bucket => {
-				return bucket === bucketName
+				return bucket.metadata.id === bucketName
 			})
 			.map(bucket => {
 				return {
 					meta: {},
 					data: {
-						name: bucket.name
+						name: bucket.metadata.id
 					}
 				}
 			})[0]
 			return resolve(bucket ? bucket : null)
 		})
-		.catch(err => console.log('err retrieving local buckets', err))
+		.catch(err => console.log('err retrieving buckets', err))
 })
