@@ -1,11 +1,12 @@
 import { Storage } from './storage'
 import { checkIfBucketExists, createBucket } from './bucket-operations'
 import { uploadFile } from './file-operations'
+import { queue } from 'async'
 
 export const localStorage = ({ publish, subscribe }) => {
 	console.log('-------------------------')
 	console.log('localCloudStorage')
-
+	const queue = q({ publish })
 	subscribe({
 		channel: 'cloud storage'
 	})
@@ -14,11 +15,12 @@ export const localStorage = ({ publish, subscribe }) => {
 		filterMsgs(msg => {
 			return msg.data
 		}).subscribe(msg => {
-			doPhotoUpload({
-				msg
-			}).then(() => {
-				return
-			})
+			return enqueue({ msg, queue })
+			// doPhotoUpload({
+			// 	msg
+			// }).then(() => {
+			// 	return
+			// })
 		})
 	})
 }
@@ -52,4 +54,15 @@ export const doPhotoUpload = ({ msg }) => new Promise((resolve, reject) => {
 			}
 		})
 	})
+})
+
+export const q = ({ publish }) => queue((msg, cb) => {
+    doPhotoUpload({ msg })
+	.then(cb)
+})
+
+export const enqueue = ({ msg, queue }) => new Promise((resolve, reject) => {
+    console.log('Queueing message: ', msg)
+	queue.push(msg)
+    return resolve()
 })

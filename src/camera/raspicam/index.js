@@ -4,9 +4,14 @@ import { get } from 'lodash/fp'
 import { ensureDirSync } from 'fs-extra'
 import { managePhotos } from './manage-photos'
 import { doFakePhoto, doRealPhoto } from './photo'
+import { queue } from 'async'
 // import { writeFileSync } from 'fs-extra'
 
-export const raspicam = ({ publish, subscribe }) => {
+export const raspicam = ({
+    publish,
+    subscribe,
+}) => {
+    const queue = q({ publish })
     subscribe({
         channel: 'motion sensor'
     })
@@ -20,27 +25,49 @@ export const raspicam = ({ publish, subscribe }) => {
             return false
         }).subscribe(msg => {
             console.log('filteredMsg - raspicam', msg)
-            takePhoto({ date: new Date() })
-            .then(({
-                location,
-                name
-            }) => {
-                publish()
-                    .then(({ connect }) => connect())
-                    .then(({ send }) => send({
-                        channel: 'cloud storage',
-                        data: {
-                            location,
-                            name
-                        }
-                    }))
-                return { location }
-            })
-            .then(managePhotos)
+            // const queue = queueCreator({ publish })
+            // q({ publish })
+            enqueue({ msg, queue })
+            // .then(dequeue)
+            // .then(result => console.log('hello', result))
+            // .then()
+            // dequeue()
+            // .then(() => {
+            //     console.log('hello')
+            // })
+
         })
     })
 }
 
+export const q = ({ publish }) => queue((msg, cb) => {
+    takePhoto({ date: new Date() })
+    .then(({
+        location,
+        name
+    }) => {
+        publish()
+            .then(({ connect }) => connect())
+            .then(({ send }) => send({
+                channel: 'cloud storage',
+                data: {
+                    location,
+                    name
+                }
+            }))
+        return { location }
+    })
+    .then(managePhotos)
+    .then(cb)
+})
+
+export const enqueue = ({ msg, queue }) => new Promise((resolve, reject) => {
+    console.log('Queueing message: ', msg)
+	queue.push(msg)
+    return resolve()
+})
+
+// TODO: Move this to photo.js and make doTakePhoto a function
 export const takePhoto = ({ date }) => new Promise((resolve, reject) => {
     const location = resolvePath(__dirname, 'pictures')
     const name = `${date.getMonth()}-${date.getDate()}-${date.getFullYear()}-${date.getHours()}:${date.getMinutes()}::${date.getSeconds()}.jpg`
