@@ -24,7 +24,30 @@ const getClient = ({ type }) => ({
 		if (!clients[type]) {
 			setClient({
 				type,
-				client: createClient(6379)
+				client: createClient({
+					retry_strategy: function (options) {
+					// console.log('retryStrategy')
+					console.log('options', options)
+					if (options.error && options.error.code === 'ECONNREFUSED') {
+					    // End reconnecting on a specific error and flush all commands with
+					    // a individual error
+					    return new Error('The server refused the connection');
+					}
+					if (options.total_retry_time > 1000 * 60 * 60) {
+					    // End reconnecting after a specific timeout and flush all commands
+					    // with a individual error
+					    return new Error('Retry time exhausted');
+					}
+					if (options.attempt > 10) {
+					    // End reconnecting with built in error
+					    return undefined;
+					}
+					console.log('asdfa')
+					// reconnect after
+					return Math.min(options.attempt * 100, 5000);
+					},
+					port: 6379
+				})
 			})
 		}
 		return resolve(clients[type])
@@ -42,6 +65,9 @@ export const redis = () => ({
 					channel,
 					data
 				}) => new Promise(resolve => {
+					client.on('error', (...args) => {
+						console.log('publish - error', args)
+					})
 					client.publish(channel, JSON.stringify(data))
 					return resolve({
 						meta: {
@@ -54,9 +80,7 @@ export const redis = () => ({
 		})
 	}),
 	subscribe: ({ channel }) => new Promise(resolve => {
-		console.log('HELLO')
 		const c = getClient({ type: channel })
-		console.log('ANOTHER')
 		return resolve({
 			connect: () => c.connect()
 				.then(client => {
@@ -67,14 +91,7 @@ export const redis = () => ({
 					} = createSubject()
 					client.subscribe(channel)
 					client.on('error', (...args) => {
-						console.log('ERROR OCCURRED', args)
-						next({
-							meta: {
-								type: 'error',
-								timestamp: new Date().getTime(),
-								data: args //sanitize anything provider specific (redis)
-							}
-						})
+						console.log('subscribe - error', args)
 					})
 					client.on('connect', (...args) => {
 						console.log('Connected to Redis')
@@ -118,6 +135,12 @@ export const redis = () => ({
 })
 
 
-export const doRedisReconnect = () => {
-	
-}
+export const doRedisReconnect = ({ err, delay }) => new Promise((resolve, reject) => {
+	// let attempts = 0
+	// if ()
+	// console.log('HELLO')
+	setTimeout(() => {
+		console.log('Attempting to reconnect')
+		resolve({ err })
+	}, 5000)
+})
