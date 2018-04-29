@@ -11,6 +11,7 @@ export const localStorage = ({ publish, subscribe }) => {
 		channel: 'cloud storage'
 	})
 	.then(({ connect }) => connect())
+	.catch(e => console.log('asdfasfsafsf', e))
 	.then(({ allMsgs, filterMsgs }) => {
 		filterMsgs(msg => {
 			return msg.data

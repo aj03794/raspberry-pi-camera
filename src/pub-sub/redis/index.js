@@ -2,7 +2,6 @@
 // Need some sort of naming convention
 
 import { createClient } from 'redis'
-// import { Subject } from 'rxjs'
 import { createSubject } from 'create-subject-with-filter'
 
 const providerConfigParams = {
@@ -25,7 +24,23 @@ const getClient = ({ type }) => ({
 		if (!clients[type]) {
 			setClient({
 				type,
-				client: createClient(6379)
+				client: createClient({
+					retry_strategy: function (options) {
+						console.log('options', options)
+						if (options.error && options.error.code === 'ECONNREFUSED') {
+						// End reconnecting on a specific error and flush all commands with
+						// a individual error
+							if (options.attempt >= 20) {
+							    // End reconnecting with built in error
+							    return undefined;
+							}
+							return Math.min(options.attempt * 100, 5000);
+						}
+						// reconnect after
+						return Math.min(options.attempt * 100, 5000);
+					},
+					port: 6379
+				})
 			})
 		}
 		return resolve(clients[type])
@@ -43,6 +58,9 @@ export const redis = () => ({
 					channel,
 					data
 				}) => new Promise(resolve => {
+					client.on('error', (...args) => {
+						console.log('publish - error', args)
+					})
 					client.publish(channel, JSON.stringify(data))
 					return resolve({
 						meta: {
@@ -65,6 +83,9 @@ export const redis = () => ({
 						next
 					} = createSubject()
 					client.subscribe(channel)
+					client.on('error', (...args) => {
+						console.log('subscribe - error', args)
+					})
 					client.on('connect', (...args) => {
 						console.log('Connected to Redis')
 						// ...args looks like [ 'motion sensor', '{"msg":{"motion":false}}' ]
@@ -78,13 +99,16 @@ export const redis = () => ({
 								data: args //sanitize anything provider specific (redis)
 							})
 						})
-						client.on('error', (...args) => next({
-							meta: {
-								type: 'error',
-								timestamp: new Date().getTime(),
-								data: args //sanitize anything provider specific (redis)
-							}
-						}))
+						client.on('error', (...args) => {
+							console.log('ERROR OCCURRED', error)
+							next({
+								meta: {
+									type: 'error',
+									timestamp: new Date().getTime(),
+									data: args //sanitize anything provider specific (redis)
+								}
+							})
+						})
 						// console.log('asdfda connection')
 						next({
 							meta: {
@@ -101,4 +125,15 @@ export const redis = () => ({
 				})
 		})
 	})
+})
+
+
+export const doRedisReconnect = ({ err, delay }) => new Promise((resolve, reject) => {
+	// let attempts = 0
+	// if ()
+	// console.log('HELLO')
+	setTimeout(() => {
+		console.log('Attempting to reconnect')
+		resolve({ err })
+	}, 5000)
 })

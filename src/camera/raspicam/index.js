@@ -5,7 +5,6 @@ import { ensureDirSync } from 'fs-extra'
 import { managePhotos } from './manage-photos'
 import { doFakePhoto, doRealPhoto } from './photo'
 import { queue } from 'async'
-// import { writeFileSync } from 'fs-extra'
 
 export const raspicam = ({
     publish,
