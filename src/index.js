@@ -22,9 +22,9 @@ import(`./pub-sub`)
                     publish,
                     subscribe
                 }
-                // console.log('cloudStorage', cloudStorage)
                 cloudStorage({ ...pubsubFunctions })
                 camera({ ...pubsubFunctions })
+                return
             })
         }
     )
