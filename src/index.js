@@ -22,89 +22,12 @@ import(`./pub-sub`)
                     publish,
                     subscribe
                 }
-                // console.log('cloudStorage', cloudStorage)
                 cloudStorage({ ...pubsubFunctions })
                 camera({ ...pubsubFunctions })
+                return
             })
-            // .then(values => console.log('values', values))
         }
     )
-        // console.log('subscribe', subscribe)
-        // console.log('publish', publish)
-        // Promise.all(([
-        //     import(`./cloud-storage`),
-        //     import(`./camera`)
-        // ]).then(([
-        //         { [cloudStorageProvider]: cloudStorage },
-        //         { [cameraProvider]: camera }
-        //     ]) => {
-        //         const pubsubFunctions = {
-        //             publish,
-        //             subscribe
-        //         }
-        //         cloudStorage({ ...pubsubFunctions }),
-        //         camera({ ...pubsubFunctions })
-        //         return
-        //     })
-        //     .catch(err => {
-        //         console.log('err', err)
-        //     })
-        // )
-    // })
-
-// Promise.all([
-//     import(`./pub-sub`)
-// ])
-// .then(([
-//     { [pubsubProvider]: pubsub },
-//     // { [cloudStorageProvider]: cloudStorage },
-//     // { [cameraProvider]: camera }
-// ]) => pubsub())
-// .then(({
-//     subscribe,
-//     publish
-// }) => {
-//     return Promise.all(([
-//         import(`./cloud-storage`),
-//         import(`./camera`)
-//     ])
-        // .then(([
-        //     { [cloudStorageProvider]: cloudStorage },
-        //     { [cameraProvider]: camera }
-        // ]) => {
-        //     const pubsubFunctions = {
-        //         publish,
-        //         subscribe
-        //     }
-        //     cloudStorage({ ...pubsubFunctions }),
-        //     camera({ ...pubsubFunctions })
-        //     return
-        // })
-        // .catch(err => {
-        //     console.log('err', err)
-        // })
-//     )
-// })
-
-    // })
-        // .then(({ all, filter }) => {
-        //     all((...args) => {
-        //         console.log('called', args)
-        //     })
-        // })
-        // .then(() => {
-        //     publish().then(({ connect }) => connect())
-        //         .then(({ send }) => send({
-        //             channel: 'test',
-        //             data: {
-        //                 some: 'data'
-        //             }
-        //         }))
-        // })
-
-    // camera({ publish, subscribe })
-    // cloudStorage({ publish, subscribe })
-// })
 
 
 
