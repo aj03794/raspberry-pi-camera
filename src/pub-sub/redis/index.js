@@ -26,25 +26,18 @@ const getClient = ({ type }) => ({
 				type,
 				client: createClient({
 					retry_strategy: function (options) {
-					// console.log('retryStrategy')
-					console.log('options', options)
-					if (options.error && options.error.code === 'ECONNREFUSED') {
-					    // End reconnecting on a specific error and flush all commands with
-					    // a individual error
-					    return new Error('The server refused the connection');
-					}
-					if (options.total_retry_time > 1000 * 60 * 60) {
-					    // End reconnecting after a specific timeout and flush all commands
-					    // with a individual error
-					    return new Error('Retry time exhausted');
-					}
-					if (options.attempt > 10) {
-					    // End reconnecting with built in error
-					    return undefined;
-					}
-					console.log('asdfa')
-					// reconnect after
-					return Math.min(options.attempt * 100, 5000);
+						console.log('options', options)
+						if (options.error && options.error.code === 'ECONNREFUSED') {
+						// End reconnecting on a specific error and flush all commands with
+						// a individual error
+							if (options.attempt >= 20) {
+							    // End reconnecting with built in error
+							    return undefined;
+							}
+							return Math.min(options.attempt * 100, 5000);
+						}
+						// reconnect after
+						return Math.min(options.attempt * 100, 5000);
 					},
 					port: 6379
 				})
