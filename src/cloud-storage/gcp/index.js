@@ -3,6 +3,7 @@ import { flow } from 'lodash'
 import Storage from '@google-cloud/storage'
 import { createGcpBucket,  checkIfBucketExists } from './bucket-operations'
 import { uploadFile } from './file-operations'
+import { queue } from 'async'
 
 export const gcpCloudStorage = ({ publish, subscribe }) => {
 	console.log('-------------------------')
@@ -16,11 +17,7 @@ export const gcpCloudStorage = ({ publish, subscribe }) => {
 		filterMsgs(msg => {
 			return msg.data
 		}).subscribe(msg => {
-			doPhotoUpload({
-				msg
-			}).then(() => {
-				return
-			})
+			enqueue({ msg })
 		})
 	})
 }
@@ -28,6 +25,7 @@ export const gcpCloudStorage = ({ publish, subscribe }) => {
 export const doPhotoUpload = ({ msg }) => new Promise((resolve, reject) => {
 	console.log('-------------------------')
 	console.log('doPhotoUpload - GCP')
+	const queue = q({ publish })
 	const bucketName = process.env.BUCKET_NAME
 	const { location, name: file } = JSON.parse(msg.data[1])
 	const storage = new Storage({
@@ -54,4 +52,15 @@ export const doPhotoUpload = ({ msg }) => new Promise((resolve, reject) => {
 			}
 		})
 	})
+})
+
+export const q = ({ publish }) => queue((msg, cb) => {
+    doPhotoUpload({ msg })
+	.then(cb)
+})
+
+export const enqueue = ({ msg, queue }) => new Promise((resolve, reject) => {
+    console.log('Queueing message: ', msg)
+	queue.push(msg)
+    return resolve()
 })

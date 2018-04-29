@@ -67,7 +67,7 @@ export const enqueue = ({ msg, queue }) => new Promise((resolve, reject) => {
     return resolve()
 })
 
-
+// TODO: Move this to photo.js and make doTakePhoto a function
 export const takePhoto = ({ date }) => new Promise((resolve, reject) => {
     const location = resolvePath(__dirname, 'pictures')
     const name = `${date.getMonth()}-${date.getDate()}-${date.getFullYear()}-${date.getHours()}:${date.getMinutes()}::${date.getSeconds()}.jpg`
