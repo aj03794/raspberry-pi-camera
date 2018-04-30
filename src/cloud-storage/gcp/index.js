@@ -1,14 +1,14 @@
 import { get } from 'lodash/fp'
 import { flow } from 'lodash'
 import Storage from '@google-cloud/storage'
-import { createGcpBucket,  checkIfBucketExists } from './bucket-operations'
+import { createBucket,  checkIfBucketExists } from './bucket-operations'
 import { uploadFile } from './file-operations'
 import { queue } from 'async'
 
 export const gcpCloudStorage = ({ publish, subscribe }) => {
 	console.log('-------------------------')
 	console.log('gcpCloudStorage')
-
+	const queue = q({ publish })
 	subscribe({
 		channel: 'cloud storage'
 	})
@@ -17,7 +17,7 @@ export const gcpCloudStorage = ({ publish, subscribe }) => {
 		filterMsgs(msg => {
 			return msg.data
 		}).subscribe(msg => {
-			enqueue({ msg })
+			enqueue({ msg, queue })
 		})
 	})
 }
@@ -25,7 +25,6 @@ export const gcpCloudStorage = ({ publish, subscribe }) => {
 export const doPhotoUpload = ({ msg }) => new Promise((resolve, reject) => {
 	console.log('-------------------------')
 	console.log('doPhotoUpload - GCP')
-	const queue = q({ publish })
 	const bucketName = process.env.BUCKET_NAME
 	const { location, name: file } = JSON.parse(msg.data[1])
 	const storage = new Storage({
@@ -35,7 +34,7 @@ export const doPhotoUpload = ({ msg }) => new Promise((resolve, reject) => {
 	.then(bucket => {
 		if (!bucket) {
 			console.log('Bucket does not exist')
-			return createGcpBucket({ storage, bucketName })
+			return createBucket({ storage, bucketName })
 			.catch(err => reject(err))
 		}
 		console.log('Bucket exists')
@@ -60,7 +59,7 @@ export const q = ({ publish }) => queue((msg, cb) => {
 })
 
 export const enqueue = ({ msg, queue }) => new Promise((resolve, reject) => {
-    console.log('Queueing message: ', msg)
+    console.log('Queueing message - cloud storage: ', msg)
 	queue.push(msg)
     return resolve()
 })

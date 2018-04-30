@@ -61,7 +61,7 @@ export const q = ({ publish }) => queue((msg, cb) => {
 })
 
 export const enqueue = ({ msg, queue }) => new Promise((resolve, reject) => {
-    console.log('Queueing message: ', msg)
+    console.log('Queueing message - camera: ', msg)
 	queue.push(msg)
     return resolve()
 })
