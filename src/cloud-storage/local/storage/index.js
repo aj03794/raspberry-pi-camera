@@ -51,6 +51,7 @@ export function Storage({ projectId }) {
 	})
 
 	this.createBucket = (bucketName) => new Promise((resolve, reject) => {
+		// console.log('createBucket', resolvePath(__dirname, 'buckets', bucketName)
 		return makeDir(resolvePath(__dirname, 'buckets', bucketName), err => {
 			if (err) {
 				console.log('Error creating bucket - local', err)
