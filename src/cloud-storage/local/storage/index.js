@@ -12,7 +12,13 @@ export function Storage({ projectId }) {
 	this.upload = (fileName) => new Promise((resolve, reject) => {
 		const src = resolvePath(fileName)
 		const destFileName = basename(src)
-		const destination = resolvePath(__dirname, 'buckets', this.bucketName, destFileName)
+		const projectDir = resolvePath(process.env.PROJECT_DIR)
+		const destination = resolvePath(
+			projectDir,
+			'buckets',
+			this.bucketName,
+			destFileName
+		)
 		console.log('destFileName', destFileName)
 		return copy(src, destination, err => {
 			if (err) {
