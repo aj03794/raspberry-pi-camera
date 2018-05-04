@@ -1,6 +1,8 @@
 import { writeFileSync } from 'fs-extra'
 import { exec } from 'child_process'
 
+const doPreviewMode = () => process.env.CAMERA_PREVIEW === true ? `-p` : `-n`
+
 export const doFakePhoto = ({
     location,
     name,
@@ -16,7 +18,9 @@ export const doRealPhoto = ({
     name,
 	msgToSend
 }) => new Promise((resolve, reject) => {
-    return exec(`raspistill -q 75 --mode 3 --output ${name}`,
+    const previewMode = doPreviewMode()
+    console.log('previewMode', previeMode)
+    return exec(`raspistill ${previewMode} -q 75 -md 3 -o ${name}`,
         {
             cwd: location
         },
