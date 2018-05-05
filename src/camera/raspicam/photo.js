@@ -11,6 +11,10 @@ export const doFakePhoto = ({
     name,
 	msgToSend
 }) => new Promise((resolve, reject) => {
+    const previewMode = getPreviewMode()
+    const cameraTimeout = getCameraTimeout()
+    console.log('previewMode', previewMode)
+    console.log('camearTimeout', camearTimeouts)
 	writeFileSync(`${location}/${name}`)
 	const msg = msgToSend({ location, name })
 	return resolve(msg)
@@ -24,7 +28,7 @@ export const doRealPhoto = ({
     const previewMode = getPreviewMode()
     const cameraTimeout = getCameraTimeout()
     console.log('previewMode', previewMode)
-    console.log('')
+    console.log('camearTimeout', camearTimeouts)
     return exec(`raspistill ${previewMode} ${cameraTimeout} -q 75 -md 3 -o ${name}`,
         {
             cwd: location
