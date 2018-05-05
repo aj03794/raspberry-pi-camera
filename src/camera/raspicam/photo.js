@@ -1,11 +1,20 @@
 import { writeFileSync } from 'fs-extra'
 import { exec } from 'child_process'
 
+const getPreviewMode = () => process.env.CAMERA_PREVIEW === true ? `-p` : `-n`
+const getCameraTimeout = () => {
+    return process.env.CAMERA_TIMEOUT ? `-t ${process.env.CAMERA_TIMEOUT}` : `-t 500`
+}
+
 export const doFakePhoto = ({
     location,
     name,
 	msgToSend
 }) => new Promise((resolve, reject) => {
+    const previewMode = getPreviewMode()
+    const cameraTimeout = getCameraTimeout()
+    console.log('previewMode', previewMode)
+    console.log('camearTimeout', camearTimeouts)
 	writeFileSync(`${location}/${name}`)
 	const msg = msgToSend({ location, name })
 	return resolve(msg)
@@ -16,7 +25,12 @@ export const doRealPhoto = ({
     name,
 	msgToSend
 }) => new Promise((resolve, reject) => {
-    return exec(`raspistill -q 75 --mode 3 --output ${name}`,
+    const previewMode = getPreviewMode()
+    const cameraTimeout = getCameraTimeout()
+    console.log('previewMode', previewMode)
+    console.log('cameraTimeout', cameraTimeout)
+    return exec(`raspistill -md 3 ${cameraTimeout} ${previewMode} -o ${name}`,
+    // return exec(`raspistill --nopreview -o ${name}`,
         {
             cwd: location
         },
