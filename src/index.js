@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const cloudStorageProvider = process.env['cloudStorage'].toLowerCase()
 const pubsubProvider = process.env['pubsub'].toLowerCase()
 const cameraProvider = process.env['camera'].toLowerCase()
