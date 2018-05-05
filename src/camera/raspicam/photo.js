@@ -3,7 +3,7 @@ import { exec } from 'child_process'
 
 const getPreviewMode = () => process.env.CAMERA_PREVIEW === true ? `-p` : `-n`
 const getCameraTimeout = () => {
-    process.env.CAMERA_TIMEOUT ? `-p ${process.env.CAMERA_TIMEOUT}` : `-p 500`
+    return process.env.CAMERA_TIMEOUT ? `-t ${process.env.CAMERA_TIMEOUT}` : `-t 500`
 }
 
 export const doFakePhoto = ({
@@ -28,8 +28,9 @@ export const doRealPhoto = ({
     const previewMode = getPreviewMode()
     const cameraTimeout = getCameraTimeout()
     console.log('previewMode', previewMode)
-    console.log('camearTimeout', camearTimeouts)
-    return exec(`raspistill ${previewMode} ${cameraTimeout} -q 75 -md 3 -o ${name}`,
+    console.log('cameraTimeout', cameraTimeout)
+    return exec(`raspistill -md 3 ${cameraTimeout} ${previewMode} -o ${name}`,
+    // return exec(`raspistill --nopreview -o ${name}`,
         {
             cwd: location
         },
