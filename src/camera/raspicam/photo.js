@@ -14,7 +14,7 @@ export const doFakePhoto = ({
     const previewMode = getPreviewMode()
     const cameraTimeout = getCameraTimeout()
     console.log('previewMode', previewMode)
-    console.log('camearTimeout', camearTimeouts)
+    console.log('cameraTimeout', cameraTimeout)
 	writeFileSync(`${location}/${name}`)
 	const msg = msgToSend({ location, name })
 	return resolve(msg)

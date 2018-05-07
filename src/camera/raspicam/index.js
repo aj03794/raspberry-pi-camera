@@ -43,6 +43,7 @@ export const q = ({ publish }) => queue((msg, cb) => {
     takePhoto({ date: new Date() })
     .then(({
         location,
+        folder,
         name
     }) => {
         publish()
@@ -50,7 +51,7 @@ export const q = ({ publish }) => queue((msg, cb) => {
             .then(({ send }) => send({
                 channel: 'cloud storage',
                 data: {
-                    location,
+                    folder,
                     name
                 }
             }))
@@ -69,6 +70,8 @@ export const enqueue = ({ msg, queue }) => new Promise((resolve, reject) => {
 // TODO: Move this to photo.js and make doTakePhoto a function
 export const takePhoto = ({ date }) => new Promise((resolve, reject) => {
     const location = resolvePath(__dirname, 'pictures')
+    const folder = 'pictures'
+    // console.log('LOCATION', location)
     const name = `${date.getMonth()}-${date.getDate()}-${date.getFullYear()}-${date.getHours()}:${date.getMinutes()}::${date.getSeconds()}.jpg`
     return ensureDirExists({ location })
     .then(({ location }) => {
@@ -76,7 +79,7 @@ export const takePhoto = ({ date }) => new Promise((resolve, reject) => {
             ? doFakePhoto({ location, name, msgToSend })
             : doRealPhoto({ location, name, msgToSend })
     })
-    .then(({ data: { location, name } }) => resolve({ location, name }))
+    .then(({ data: { location, name } }) => resolve({ location, folder, name }))
 })
 
 export const ensureDirExists = ({ location }) => new Promise((resolve, reject) => {

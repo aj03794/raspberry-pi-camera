@@ -2,6 +2,7 @@ import { Storage } from './storage'
 import { checkIfBucketExists, createBucket } from './bucket-operations'
 import { uploadFile } from './file-operations'
 import { queue } from 'async'
+import { resolve as resolvePath } from 'path'
 
 export const localStorage = ({ publish, subscribe }) => {
 	console.log('-------------------------')
@@ -30,7 +31,12 @@ export const doPhotoUpload = ({ msg }) => new Promise((resolve, reject) => {
 	console.log('-------------------------')
 	console.log('doPhotoUpload - local')
 	const bucketName = process.env.BUCKET_NAME
-	const { location, name: file } = JSON.parse(msg.data[1])
+	console.log('MSG', msg)
+	const { folder, name: file } = JSON.parse(msg.data[1])
+	console.log('folder', folder)
+	// console.log
+	const location = resolvePath(process.env.PROJECT_DIR, 'dist', 'camera', 'raspicam', folder)
+	console.log('location', location)
 	const storage = new Storage({
 		projectId: process.env.PROJECT_ID
 	})
