@@ -39,6 +39,7 @@ const getClient = ({ type }) => ({
 						// reconnect after
 						return Math.min(options.attempt * 100, 5000);
 					},
+					host: process.env.IP_ADDRESS,
 					port: 6379
 				})
 			})
