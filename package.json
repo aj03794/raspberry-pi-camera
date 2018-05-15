@@ -9,7 +9,7 @@
     "start-dev": "npm run build && node  dist/index.js dev",
     "test": "exit 0",
     "version-asdf": "git add .",
-    "postversion-asdf": "git commit -am `Incrementing version` && git push"
+    "postversion": "git commit -am `Incrementing version` && git push"
   },
   "keywords": [],
   "author": "Adam Johnston",
