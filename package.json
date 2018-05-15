@@ -1,6 +1,6 @@
 {
   "name": "raspberry-pi-camera",
-  "version": "1.0.2",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "start-dev": "npm run build && node  dist/index.js dev",
     "test": "exit 0",
     "version-asdf": "git add .",
-    "postversion": "git push"
+    "postversion": "git commit -am `Incrementing version` && git push"
   },
   "keywords": [],
   "author": "Adam Johnston",
