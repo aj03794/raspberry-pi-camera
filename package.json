@@ -8,8 +8,8 @@
     "start": "npm run build && node dist/index.js",
     "start-dev": "npm run build && node  dist/index.js dev",
     "test": "exit 0",
-    "version-asdf": "git add .",
-    "postversion-asdfas": "git commit -am `Incrementing version` && git push"
+    "version-patch": "npm version patch",
+    "postversion": "git push"
   },
   "keywords": [],
   "author": "Adam Johnston",
