@@ -3,11 +3,6 @@ const webpack = require('webpack')
 const nodeExternals = require('webpack-node-externals');
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 
-// const CleanWebpackPlugin = require('clean-webpack-plugin')
-// const HtmlWebpackPlugin = require('html-webpack-plugin')
-// const version = require('./package.json').version
-// var webpack = require('webpack')
-
 module.exports = {
 	entry: './src/index',
 	output: {

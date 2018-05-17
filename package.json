@@ -6,8 +6,9 @@
   "scripts": {
     "build": "webpack --config webpack.config.js",
     "build-old": "rm -rf dist && babel src --out-dir dist",
-    "start": "npm run build && node dist/index.js",
-    "start-dev": "npm run build && node  dist/index.js dev",
+    "start": "npm run build && node dist/bundle.js",
+    "start-dev": "npm run build && node  dist/bundle.js dev",
+    "start-dev-old":"npm run build-old && node  dist/index.js dev",
     "test": "exit 0"
   },
   "keywords": [],

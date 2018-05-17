@@ -4,6 +4,10 @@ const cloudStorageProvider = process.env['cloudStorage'].toLowerCase()
 const pubsubProvider = process.env['pubsub'].toLowerCase()
 const cameraProvider = process.env['camera'].toLowerCase()
 
+console.log('cloudStorageProvider', cloudStorageProvider)
+console.log('pubsubProvider', pubsubProvider)
+console.log('cameraProvider', cameraProvider)
+
 import(`./pub-sub`)
     .then(({
         [pubsubProvider]: pubsub
