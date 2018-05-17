@@ -8,7 +8,7 @@ console.log('cloudStorageProvider', cloudStorageProvider)
 console.log('pubsubProvider', pubsubProvider)
 console.log('cameraProvider', cameraProvider)
 
-console.log('F')
+console.log('For test')
 
 import(`./pub-sub`)
     .then(({
