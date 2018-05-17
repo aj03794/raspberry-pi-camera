@@ -1,6 +1,6 @@
 {
   "name": "raspberry-pi-camera",
-  "version": "1.0.0",
+  "version": "0.0.16",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,7 @@
     "build-old": "rm -rf dist && babel src --out-dir dist",
     "start": "npm run build && node dist/bundle.js",
     "start-dev": "npm run build && node  dist/bundle.js dev",
-    "start-dev-old":"npm run build-old && node  dist/index.js dev",
+    "start-dev-old": "npm run build-old && node  dist/index.js dev",
     "test": "exit 0"
   },
   "keywords": [],
@@ -21,6 +21,7 @@
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
+    "clean-webpack-plugin": "^0.1.19",
     "dotenv": "^5.0.1",
     "webpack": "^4.8.2",
     "webpack-cli": "^2.1.3"
