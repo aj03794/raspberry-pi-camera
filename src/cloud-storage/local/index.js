@@ -4,7 +4,11 @@ import { uploadFile } from './file-operations'
 import { queue } from 'async'
 import { resolve as resolvePath } from 'path'
 
-export const localStorage = ({ publish, subscribe }) => {
+export const localStorage = ({
+	publish,
+	subscribe,
+	getSetting
+}) => {
 	console.log('-------------------------')
 	console.log('localCloudStorage')
 	const queue = q({ publish })
@@ -17,28 +21,27 @@ export const localStorage = ({ publish, subscribe }) => {
 		filterMsgs(msg => {
 			return msg.data
 		}).subscribe(msg => {
-			return enqueue({ msg, queue })
-			// doPhotoUpload({
-			// 	msg
-			// }).then(() => {
-			// 	return
-			// })
+			return enqueue({ msg, queue, getSetting })
 		})
 	})
 }
 
-export const doPhotoUpload = ({ msg }) => new Promise((resolve, reject) => {
+export const doPhotoUpload = ({ msg, getSetting }) => new Promise((resolve, reject) => {
 	console.log('-------------------------')
 	console.log('doPhotoUpload - local')
-	const bucketName = process.env.BUCKET_NAME
+	// const bucketName = process.env.BUCKET_NAME
+	const bucketName = getSetting('bucketName')
 	console.log('MSG', msg)
 	const { folder, name: file } = JSON.parse(msg.data[1])
 	console.log('folder', folder)
 	// console.log
-	const location = resolvePath(process.env.PROJECT_DIR, 'dist', 'camera', 'raspicam', folder)
+	const location = resolvePath(__dirname, '../../../', 'dist', 'camera', 'raspicam', folder)
+	// const newLocation = resolvePath(getSetting('projectDir'), 'dist', 'camera', 'raspicam', folder)
+
 	console.log('location', location)
 	const storage = new Storage({
-		projectId: process.env.PROJECT_ID
+		// projectId: process.env.PROJECT_ID
+		projectId: getSetting('projectId')
 	})
 	checkIfBucketExists({ storage, bucketName })
 	.then(bucket => {
@@ -63,13 +66,13 @@ export const doPhotoUpload = ({ msg }) => new Promise((resolve, reject) => {
 	})
 })
 
-export const q = ({ publish }) => queue((msg, cb) => {
-    doPhotoUpload({ msg })
+export const q = ({ publish }) => queue(({ msg, getSetting }, cb) => {
+  doPhotoUpload({ msg, getSetting })
 	.then(cb)
 })
 
-export const enqueue = ({ msg, queue }) => new Promise((resolve, reject) => {
+export const enqueue = ({ msg, queue, getSetting }) => new Promise((resolve, reject) => {
     console.log('Queueing message: ', msg)
-	queue.push(msg)
+	queue.push({ msg, getSetting })
     return resolve()
 })
