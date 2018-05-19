@@ -76,9 +76,9 @@ export const takePhoto = ({ date, getSetting }) => new Promise((resolve, reject)
     const name = `${date.getMonth()}-${date.getDate()}-${date.getFullYear()}-${date.getHours()}:${date.getMinutes()}::${date.getSeconds()}.jpg`
     return ensureDirExists({ location })
     .then(({ location }) => {
-        return process.argv[2] === 'dev'
-            ? doFakePhoto({ getSetting, location, name, msgToSend })
-            : doRealPhoto({ getSetting, location, name, msgToSend })
+      return getSetting('dev') === true
+          ? doFakePhoto({ getSetting, location, name, msgToSend })
+          : doRealPhoto({ getSetting, location, name, msgToSend })
     })
     .then(({ data: { location, name } }) => resolve({ location, folder, name }))
 })
