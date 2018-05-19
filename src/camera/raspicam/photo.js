@@ -2,10 +2,10 @@ import { writeFileSync } from 'fs-extra'
 import { exec } from 'child_process'
 
 // const getPreviewMode = () => process.env.CAMERA_PREVIEW === true ? `-p` : `-n`
-const getPreviewMode = () => getSetting('cameraPreview') === true ? `-p` : `-n`
-const getCameraTimeout = () => {
+const getPreviewMode = ({ getSetting }) => getSetting('cameraPreview') === true ? `-p` : `-n`
+const getCameraTimeout = ({ getSetting }) => {
     // return process.env.CAMERA_TIMEOUT ? `-t ${process.env.CAMERA_TIMEOUT}` : `-t 500`
-    return getSetting('cameraTimeout') ? `-t ${process.env.CAMERA_TIMEOUT}` : `-t 500`
+    return getSetting('cameraTimeout') ? `-t ${getSetting('cameraTimeout')}` : `-t 500`
 }
 
 export const doFakePhoto = ({
@@ -14,10 +14,10 @@ export const doFakePhoto = ({
 	msgToSend,
   getSetting
 }) => new Promise((resolve, reject) => {
-    const previewMode = getPreviewMode()
-    const cameraTimeout = getCameraTimeout()
-    console.log('previewMode', previewMode)
-    console.log('cameraTimeout', cameraTimeout)
+  const previewMode = getPreviewMode({ getSetting })
+  const cameraTimeout = getCameraTimeout({ getSetting })
+  console.log('previewMode', previewMode)
+  console.log('cameraTimeout', cameraTimeout)
 	writeFileSync(`${location}/${name}`)
 	const msg = msgToSend({ location, name })
 	return resolve(msg)

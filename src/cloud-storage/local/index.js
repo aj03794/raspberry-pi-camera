@@ -21,17 +21,12 @@ export const localStorage = ({
 		filterMsgs(msg => {
 			return msg.data
 		}).subscribe(msg => {
-			return enqueue({ msg, queue })
-			// doPhotoUpload({
-			// 	msg
-			// }).then(() => {
-			// 	return
-			// })
+			return enqueue({ msg, queue, getSetting })
 		})
 	})
 }
 
-export const doPhotoUpload = ({ msg }) => new Promise((resolve, reject) => {
+export const doPhotoUpload = ({ msg, getSetting }) => new Promise((resolve, reject) => {
 	console.log('-------------------------')
 	console.log('doPhotoUpload - local')
 	// const bucketName = process.env.BUCKET_NAME
@@ -40,12 +35,13 @@ export const doPhotoUpload = ({ msg }) => new Promise((resolve, reject) => {
 	const { folder, name: file } = JSON.parse(msg.data[1])
 	console.log('folder', folder)
 	// console.log
-	const location = resolvePath('../../../', 'dist', 'camera', 'raspicam', folder)
+	const location = resolvePath(__dirname, '../../../', 'dist', 'camera', 'raspicam', folder)
 	// const newLocation = resolvePath(getSetting('projectDir'), 'dist', 'camera', 'raspicam', folder)
 
 	console.log('location', location)
 	const storage = new Storage({
-		projectId: process.env.PROJECT_ID
+		// projectId: process.env.PROJECT_ID
+		projectId: getSetting('projectId')
 	})
 	checkIfBucketExists({ storage, bucketName })
 	.then(bucket => {
@@ -70,13 +66,13 @@ export const doPhotoUpload = ({ msg }) => new Promise((resolve, reject) => {
 	})
 })
 
-export const q = ({ publish }) => queue((msg, cb) => {
-    doPhotoUpload({ msg })
+export const q = ({ publish }) => queue(({ msg, getSetting }, cb) => {
+  doPhotoUpload({ msg, getSetting })
 	.then(cb)
 })
 
-export const enqueue = ({ msg, queue }) => new Promise((resolve, reject) => {
+export const enqueue = ({ msg, queue, getSetting }) => new Promise((resolve, reject) => {
     console.log('Queueing message: ', msg)
-	queue.push(msg)
+	queue.push({ msg, getSetting })
     return resolve()
 })

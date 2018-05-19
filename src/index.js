@@ -1,4 +1,4 @@
-require('dotenv').config()
+// require('dotenv').config()
 import { getSetting } from './settings'
 
 // const cloudStorageProvider = process.env['cloudStorage'].toLowerCase()

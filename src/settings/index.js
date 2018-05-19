@@ -7,7 +7,7 @@ export const getSetting = (settingToRetrieve) => {
   let setting
   try {
     console.log('SETTING FROM FILE', settingToRetrieve)
-    console.log('FILE', joinPath(__dirname, 'settings.json'))
+    // console.log('FILE', joinPath(__dirname, 'settings.json'))
     setting = JSON.parse(fs.readFileSync(joinPath(__dirname, 'settings.json')))[settingToRetrieve]
     // return settings[setting]
   } catch (e) {

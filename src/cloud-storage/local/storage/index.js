@@ -11,9 +11,11 @@ export function Storage({ projectId }) {
 
 	this.upload = (fileName) => new Promise((resolve, reject) => {
 		const src = resolvePath(fileName)
+		console.log('src', src)
 		const destFileName = basename(src)
 		// const projectDir = resolvePath(process.env.PROJECT_DIR)
-		const projectDir = resolvePath('../../../../')
+		const projectDir = resolvePath(__dirname, '../../../../')
+		console.log('projectDir', projectDir)
 		const destination = resolvePath(
 			projectDir,
 			'buckets',
@@ -21,6 +23,7 @@ export function Storage({ projectId }) {
 			destFileName
 		)
 		console.log('destFileName', destFileName)
+		console.log('destination', destination)
 		return copy(src, destination, err => {
 			if (err) {
 				console.log('Err uploading file - local', err)

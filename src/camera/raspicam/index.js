@@ -27,7 +27,7 @@ export const raspicam = ({
             console.log('filteredMsg - raspicam', msg)
             // const queue = queueCreator({ publish })
             // q({ publish })
-            enqueue({ msg, queue })
+            enqueue({ msg, queue, getSetting })
             // .then(dequeue)
             // .then(result => console.log('hello', result))
             // .then()
@@ -40,8 +40,8 @@ export const raspicam = ({
     })
 }
 
-export const q = ({ publish }) => queue((msg, cb) => {
-    takePhoto({ date: new Date() })
+export const q = ({ publish }) => queue(({ msg, getSetting }, cb) => {
+    takePhoto({ date: new Date(), getSetting })
     .then(({
         location,
         folder,
@@ -62,14 +62,14 @@ export const q = ({ publish }) => queue((msg, cb) => {
     .then(cb)
 })
 
-export const enqueue = ({ msg, queue }) => new Promise((resolve, reject) => {
-    console.log('Queueing message - camera: ', msg)
-	queue.push(msg)
-    return resolve()
+export const enqueue = ({ msg, queue, getSetting }) => new Promise((resolve, reject) => {
+  console.log('Queueing message - camera: ', msg)
+  queue.push({ msg, getSetting })
+  return resolve()
 })
 
 // TODO: Move this to photo.js and make doTakePhoto a function
-export const takePhoto = ({ date }) => new Promise((resolve, reject) => {
+export const takePhoto = ({ date, getSetting }) => new Promise((resolve, reject) => {
     const location = resolvePath(__dirname, 'pictures')
     const folder = 'pictures'
     // console.log('LOCATION', location)
