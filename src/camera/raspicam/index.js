@@ -1,6 +1,5 @@
 // import RaspiCam from 'raspicam'
 import { resolve as resolvePath } from 'path'
-import { get } from 'lodash/fp'
 import { ensureDirSync } from 'fs-extra'
 import { managePhotos } from './manage-photos'
 import { doFakePhoto, doRealPhoto } from './photo'
