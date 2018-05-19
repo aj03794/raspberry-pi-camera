@@ -1,15 +1,18 @@
 import { writeFileSync } from 'fs-extra'
 import { exec } from 'child_process'
 
-const getPreviewMode = () => process.env.CAMERA_PREVIEW === true ? `-p` : `-n`
+// const getPreviewMode = () => process.env.CAMERA_PREVIEW === true ? `-p` : `-n`
+const getPreviewMode = () => getSetting('cameraPreview') === true ? `-p` : `-n`
 const getCameraTimeout = () => {
-    return process.env.CAMERA_TIMEOUT ? `-t ${process.env.CAMERA_TIMEOUT}` : `-t 500`
+    // return process.env.CAMERA_TIMEOUT ? `-t ${process.env.CAMERA_TIMEOUT}` : `-t 500`
+    return getSetting('cameraTimeout') ? `-t ${process.env.CAMERA_TIMEOUT}` : `-t 500`
 }
 
 export const doFakePhoto = ({
-    location,
-    name,
-	msgToSend
+  location,
+  name,
+	msgToSend,
+  getSetting
 }) => new Promise((resolve, reject) => {
     const previewMode = getPreviewMode()
     const cameraTimeout = getCameraTimeout()
@@ -21,9 +24,10 @@ export const doFakePhoto = ({
 })
 
 export const doRealPhoto = ({
-    location,
-    name,
-	msgToSend
+  location,
+  name,
+	msgToSend,
+  getSetting
 }) => new Promise((resolve, reject) => {
     const previewMode = getPreviewMode()
     const cameraTimeout = getCameraTimeout()

@@ -1,0 +1,10 @@
+{
+	"cloudStorage": "local",
+	"pubsub": "redis",
+	"camera": "raspicam",
+	"bucketName": "smart-hms-photos",
+	"googleApplicationCredentials": "gcp-service-account.json",
+	"cameraPreview": false,
+	"cameraTimeout": 500,
+	"ipAddress": "127.0.0.1"
+}

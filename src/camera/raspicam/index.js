@@ -9,6 +9,7 @@ import { queue } from 'async'
 export const raspicam = ({
     publish,
     subscribe,
+    getSetting
 }) => {
     const queue = q({ publish })
     subscribe({
@@ -76,8 +77,8 @@ export const takePhoto = ({ date }) => new Promise((resolve, reject) => {
     return ensureDirExists({ location })
     .then(({ location }) => {
         return process.argv[2] === 'dev'
-            ? doFakePhoto({ location, name, msgToSend })
-            : doRealPhoto({ location, name, msgToSend })
+            ? doFakePhoto({ getSetting, location, name, msgToSend })
+            : doRealPhoto({ getSetting, location, name, msgToSend })
     })
     .then(({ data: { location, name } }) => resolve({ location, folder, name }))
 })

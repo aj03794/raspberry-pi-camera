@@ -12,7 +12,8 @@ export function Storage({ projectId }) {
 	this.upload = (fileName) => new Promise((resolve, reject) => {
 		const src = resolvePath(fileName)
 		const destFileName = basename(src)
-		const projectDir = resolvePath(process.env.PROJECT_DIR)
+		// const projectDir = resolvePath(process.env.PROJECT_DIR)
+		const projectDir = resolvePath('../../../../')
 		const destination = resolvePath(
 			projectDir,
 			'buckets',
