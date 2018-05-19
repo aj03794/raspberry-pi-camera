@@ -35,7 +35,7 @@ export const doPhotoUpload = ({ msg, getSetting }) => new Promise((resolve, reje
 	const { folder, name: file } = JSON.parse(msg.data[1])
 	console.log('folder', folder)
 	// console.log
-	const location = resolvePath(__dirname, '../../../', 'dist', 'camera', 'raspicam', folder)
+	const location = resolvePath(__dirname, '../../', 'camera', 'raspicam', folder)
 	// const newLocation = resolvePath(getSetting('projectDir'), 'dist', 'camera', 'raspicam', folder)
 
 	console.log('location', location)
