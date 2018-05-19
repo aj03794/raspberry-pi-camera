@@ -1,5 +1,3 @@
-import { get } from 'lodash/fp'
-import { flow } from 'lodash'
 import Storage from '@google-cloud/storage'
 import { createBucket,  checkIfBucketExists } from './bucket-operations'
 import { uploadFile } from './file-operations'
