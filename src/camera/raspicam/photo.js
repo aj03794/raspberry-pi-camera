@@ -29,8 +29,8 @@ export const doRealPhoto = ({
 	msgToSend,
   getSetting
 }) => new Promise((resolve, reject) => {
-    const previewMode = getPreviewMode()
-    const cameraTimeout = getCameraTimeout()
+    const previewMode = getPreviewMode({ getSetting })
+    const cameraTimeout = getCameraTimeout({ getSetting })
     console.log('previewMode', previewMode)
     console.log('cameraTimeout', cameraTimeout)
     return exec(`raspistill -md 3 ${cameraTimeout} ${previewMode} -o ${name}`,
