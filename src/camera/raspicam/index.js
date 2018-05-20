@@ -24,17 +24,7 @@ export const raspicam = ({
             return false
         }).subscribe(msg => {
             console.log('filteredMsg - raspicam', msg)
-            // const queue = queueCreator({ publish })
-            // q({ publish })
             enqueue({ msg, queue, getSetting })
-            // .then(dequeue)
-            // .then(result => console.log('hello', result))
-            // .then()
-            // dequeue()
-            // .then(() => {
-            //     console.log('hello')
-            // })
-
         })
     })
 }
