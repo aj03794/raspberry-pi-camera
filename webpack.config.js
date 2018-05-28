@@ -16,6 +16,9 @@ module.exports = {
 		}
 	},
 	plugins: [
+		new webpack.optimize.LimitChunkCountPlugin({
+			maxChunks: 1,
+		}),
 		new CleanWebpackPlugin(['./dist']),
 		new CopyWebpackPlugin([path.resolve(__dirname, 'src', 'settings', 'settings.json')])
 	],
