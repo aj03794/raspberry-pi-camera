@@ -18,11 +18,15 @@ export const raspicam = ({
     .then(({ allMsgs, filterMsgs }) => {
         filterMsgs(msg => {
             if (msg.data) {
-                const { msg: { motion } } = JSON.parse(msg.data[1])
-                return motion
+              // console.log('msg.data', msg.data)
+                const { motion } = JSON.parse(msg.data[1])
+            //     return motion
+            return motion
             }
             return false
-        }).subscribe(msg => {
+        })
+        .subscribe(msg => {
+            console.log('msg', msg)
             console.log('filteredMsg - raspicam', msg)
             enqueue({ msg, queue, getSetting })
         })
