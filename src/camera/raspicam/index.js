@@ -18,11 +18,15 @@ export const raspicam = ({
     .then(({ allMsgs, filterMsgs }) => {
         filterMsgs(msg => {
             if (msg.data) {
-                const { msg: { motion } } = JSON.parse(msg.data[1])
-                return motion
+              // console.log('msg.data', msg.data)
+                const { motion } = JSON.parse(msg.data[1])
+            //     return motion
+            return motion
             }
             return false
-        }).subscribe(msg => {
+        })
+        .subscribe(msg => {
+            console.log('msg', msg)
             console.log('filteredMsg - raspicam', msg)
             enqueue({ msg, queue, getSetting })
         })
@@ -36,13 +40,17 @@ export const q = ({ publish }) => queue(({ msg, getSetting }, cb) => {
         folder,
         name
     }) => {
+        console.log('location', location)
+        console.log('folder', folder)
+        console.log('name', name)
         publish()
             .then(({ connect }) => connect())
             .then(({ send }) => send({
                 channel: 'cloud storage',
                 data: {
                     folder,
-                    name
+                    name,
+                    location
                 }
             }))
         return { location }
