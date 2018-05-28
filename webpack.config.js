@@ -2,6 +2,7 @@ const path = require('path')
 const webpack = require('webpack')
 // const nodeExternals = require('webpack-node-externals');
 const CleanWebpackPlugin = require('clean-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = {
 	entry: './src/index',
@@ -9,8 +10,14 @@ module.exports = {
 		path: path.resolve(__dirname, 'dist'),
 		filename: 'bundle.js',
 	},
+	resolve: {
+		alias: {
+			'hiredis': path.join(__dirname, 'aliases/hiredis.js')
+		}
+	},
 	plugins: [
-		new CleanWebpackPlugin(['./dist'])
+		new CleanWebpackPlugin(['./dist']),
+		new CopyWebpackPlugin([path.resolve(__dirname, 'src', 'settings', 'settings.json')])
 	],
 	module: {
 		'rules': [
@@ -34,5 +41,8 @@ module.exports = {
 		]
 	},
 	target: 'node',
-	// externals: [nodeExternals()]
+	node: {
+		__dirname: false,
+		__filename: false
+	}
 }

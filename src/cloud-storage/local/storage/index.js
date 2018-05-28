@@ -1,6 +1,6 @@
 import { writeFile, mkdir as makeDir, ensureDir, readdir as readDir, copy } from 'fs-extra'
 import { resolve as resolvePath, basename } from 'path'
-
+import { cwd } from 'process'
 
 export function Storage({ projectId }) {
 
@@ -11,8 +11,11 @@ export function Storage({ projectId }) {
 
 	this.upload = (fileName) => new Promise((resolve, reject) => {
 		const src = resolvePath(fileName)
+		console.log('src', src)
 		const destFileName = basename(src)
-		const projectDir = resolvePath(process.env.PROJECT_DIR)
+		// const projectDir = resolvePath(process.env.PROJECT_DIR)
+		const projectDir = resolvePath(cwd())
+		console.log('projectDir', projectDir)
 		const destination = resolvePath(
 			projectDir,
 			'buckets',
@@ -20,6 +23,7 @@ export function Storage({ projectId }) {
 			destFileName
 		)
 		console.log('destFileName', destFileName)
+		console.log('destination', destination)
 		return copy(src, destination, err => {
 			if (err) {
 				console.log('Err uploading file - local', err)
@@ -31,9 +35,9 @@ export function Storage({ projectId }) {
 	})
 
 	this.getBuckets = () => new Promise((resolve, reject) => {
-		return ensureDir(resolvePath(__dirname, 'buckets'))
+		return ensureDir(resolvePath(cwd(), 'buckets'))
 			.then(() => {
-				return readDir(resolvePath(__dirname, 'buckets'), (err, buckets) => {
+				return readDir(resolvePath(cwd(), 'buckets'), (err, buckets) => {
 					if (err) {
 						console.log('Err getBuckets - local', err)
 						return reject({
@@ -57,8 +61,7 @@ export function Storage({ projectId }) {
 	})
 
 	this.createBucket = (bucketName) => new Promise((resolve, reject) => {
-		// console.log('createBucket', resolvePath(__dirname, 'buckets', bucketName)
-		return makeDir(resolvePath(__dirname, 'buckets', bucketName), err => {
+		return makeDir(resolvePath(cwd(), 'buckets', bucketName), err => {
 			if (err) {
 				console.log('Error creating bucket - local', err)
 				return reject({

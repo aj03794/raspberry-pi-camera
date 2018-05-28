@@ -1,5 +1,3 @@
-import { get } from 'lodash/fp'
-import { flow } from 'lodash'
 import Storage from '@google-cloud/storage'
 import { createBucket,  checkIfBucketExists } from './bucket-operations'
 import { uploadFile } from './file-operations'
@@ -25,7 +23,8 @@ export const gcpCloudStorage = ({ publish, subscribe }) => {
 export const doPhotoUpload = ({ msg }) => new Promise((resolve, reject) => {
 	console.log('-------------------------')
 	console.log('doPhotoUpload - GCP')
-	const bucketName = process.env.BUCKET_NAME
+	// const bucketName = process.env.BUCKET_NAME
+	const bucketName = getSetting('bucketName')
 	const { location, name: file } = JSON.parse(msg.data[1])
 	const storage = new Storage({
 		projectId: process.env.GCP_PROJECT_ID

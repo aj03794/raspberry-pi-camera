@@ -1,15 +1,16 @@
 {
   "name": "raspberry-pi-camera",
-  "version": "0.0.16",
+  "version": "0.0.38",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --config webpack.config.js",
-    "build-old": "rm -rf dist && babel src --out-dir dist",
-    "start": "npm run build && node dist/bundle.js",
-    "start-dev": "npm run build && node  dist/bundle.js dev",
-    "start-dev-old": "npm run build-old && node  dist/index.js dev",
-    "test": "exit 0"
+    "build-babel": "rm -rf dist && babel src --out-dir dist --copy-files",
+    "build": "webpack",
+    "start": "npm run build && node dist/index.js",
+    "start-dev": "npm run build && node dist/bundle.js dev",
+    "test": "exit 0",
+    "version-patch": "npm version patch",
+    "postversion": "git push"
   },
   "keywords": [],
   "author": "Adam Johnston",
@@ -22,6 +23,7 @@
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "clean-webpack-plugin": "^0.1.19",
+    "copy-webpack-plugin": "^4.5.1",
     "dotenv": "^5.0.1",
     "webpack": "^4.8.2",
     "webpack-cli": "^2.1.3"
@@ -41,7 +43,6 @@
     "async": "^2.6.0",
     "create-subject-with-filter": "0.0.5",
     "fs-extra": "^5.0.0",
-    "lodash": "^4.17.5",
     "raspicam": "^0.2.14",
     "redis": "^2.8.0"
   }
