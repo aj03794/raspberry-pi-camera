@@ -40,13 +40,17 @@ export const q = ({ publish }) => queue(({ msg, getSetting }, cb) => {
         folder,
         name
     }) => {
+        console.log('location', location)
+        console.log('folder', folder)
+        console.log('name', name)
         publish()
             .then(({ connect }) => connect())
             .then(({ send }) => send({
                 channel: 'cloud storage',
                 data: {
                     folder,
-                    name
+                    name,
+                    location
                 }
             }))
         return { location }
