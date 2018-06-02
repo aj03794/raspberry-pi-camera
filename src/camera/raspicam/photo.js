@@ -9,42 +9,40 @@ const getCameraTimeout = ({ getSetting }) => {
 }
 
 export const doFakePhoto = ({
-  location,
-  name,
-	msgToSend,
-  getSetting
+    location,
+    name,
+    msgToSend,
+    getSetting
 }) => new Promise((resolve, reject) => {
-  const previewMode = getPreviewMode({ getSetting })
-  const cameraTimeout = getCameraTimeout({ getSetting })
-  console.log('previewMode', previewMode)
-  console.log('cameraTimeout', cameraTimeout)
-	writeFileSync(`${location}/${name}`)
-	const msg = msgToSend({ location, name })
-	return resolve(msg)
+    const previewMode = getPreviewMode({ getSetting })
+    const cameraTimeout = getCameraTimeout({ getSetting })
+    console.log('previewMode', previewMode)
+    console.log('cameraTimeout', cameraTimeout)
+    writeFileSync(`${location}/${name}`)
+    const msg = msgToSend({ location, name })
+    return resolve(msg)
 })
 
 export const doRealPhoto = ({
-  location,
-  name,
-	msgToSend,
-  getSetting
+    location,
+    name,
+    msgToSend,
+    getSetting
 }) => new Promise((resolve, reject) => {
     const previewMode = getPreviewMode({ getSetting })
     const cameraTimeout = getCameraTimeout({ getSetting })
     console.log('previewMode', previewMode)
     console.log('cameraTimeout', cameraTimeout)
     return exec(`raspistill -md 3 ${cameraTimeout} ${previewMode} -o ${name}`,
-    // return exec(`raspistill --nopreview -o ${name}`,
         {
             cwd: location
         },
         (err, stdout, stderr) => {
             if (err) {
-                console.log('Something went wrong', err)
-                return reject({ message: 'Picture could not be taken' })
+                return reject({ msg: 'Picture could not be taken', err })
             }
             console.log('Raspistill: ', stdout)
-			const msg = msgToSend({ location, name })
+            const msg = msgToSend({ location, name })
             return resolve(msg)
         }
     )

@@ -6,6 +6,7 @@ export const managePhotos = ({ location }) => new Promise((resolve, reject) => {
 		return readFolder({ location })
 		.then(deleteFiles)
 		.then(resolve)
+		.catch(e => reject(err))
 	}
 	console.log('Folder does not exist')
 	return resolve()
@@ -18,7 +19,7 @@ export const deleteFiles = ({ files, location }) => new Promise((resolve, reject
 		return unlink(filePath, err => {
 			if (err) {
 				console.log('Error - deleteFiles', err)
-				return reject(err)
+				return reject({msg: 'Error -deleteFiles', err})
 			}
 			return resolve()
 		})
@@ -30,6 +31,7 @@ export const readFolder = ({ location }) => new Promise((resolve, reject) => {
 	return readDir(location, (err, files) => {
 		if (err) {
 			console.log('Err reading dir', err)
+			reject({ msg: 'Error - reading folder', err })
 		}
 		console.log('files', files)
 		return resolve({ files, location })
