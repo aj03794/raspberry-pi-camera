@@ -1,5 +1,6 @@
 // require('dotenv').config()
 import { getSetting } from './settings'
+import { slack as createSlack } from './slack'
 
 // const cloudStorageProvider = process.env['cloudStorage'].toLowerCase()
 // const pubsubProvider = process.env['pubsub'].toLowerCase()
@@ -14,7 +15,6 @@ console.log('cloudStorageProvider', cloudStorageProvider)
 console.log('pubsubProvider', pubsubProvider)
 console.log('cameraProvider', cameraProvider)
 
-console.log('For test')
 
 import(`./pub-sub`)
     .then(({
@@ -24,6 +24,7 @@ import(`./pub-sub`)
         subscribe,
         publish
     }) => {
+        const slack = createSlack({ publish })
         return Promise.all([
             import(`./cloud-storage`),
             import(`./camera`)
@@ -36,8 +37,8 @@ import(`./pub-sub`)
                     publish,
                     subscribe
                 }
-                cloudStorage({ ...pubsubFunctions, getSetting })
-                camera({ ...pubsubFunctions, getSetting })
+                cloudStorage({ ...pubsubFunctions, getSetting, slack })
+                camera({ ...pubsubFunctions, getSetting, slack })
                 return
             })
         }

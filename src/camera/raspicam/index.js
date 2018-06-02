@@ -4,12 +4,19 @@ import { ensureDirSync } from 'fs-extra'
 import { managePhotos } from './manage-photos'
 import { doFakePhoto, doRealPhoto } from './photo'
 import { queue } from 'async'
+import dateTime from 'date-time'
+
+const timestamp = () => {
+    return dateTime({ local: true , showMilliseconds: true})
+}
 
 export const raspicam = ({
     publish,
     subscribe,
-    getSetting
+    getSetting,
+    slack
 }) => {
+    console.log('---->', timestamp())
     const queue = q({ publish })
     subscribe({
         channel: 'motion sensor'
@@ -28,12 +35,12 @@ export const raspicam = ({
         .subscribe(msg => {
             console.log('msg', msg)
             console.log('filteredMsg - raspicam', msg)
-            enqueue({ msg, queue, getSetting })
+            enqueue({ msg, queue, getSetting, slack })
         })
     })
 }
 
-export const q = ({ publish }) => queue(({ msg, getSetting }, cb) => {
+export const q = ({ publish }) => queue(({ msg, getSetting, slack }, cb) => {
     takePhoto({ date: new Date(), getSetting })
     .then(({
         location,
@@ -55,13 +62,34 @@ export const q = ({ publish }) => queue(({ msg, getSetting }, cb) => {
             }))
         return { location }
     })
-    .then(managePhotos)
-    .then(cb)
+    .then(({
+        location
+    }) => {
+        slack({
+            slackMsg: {
+                msg: 'Photo taken succesfully',
+                timestamp: timestamp()
+            }
+        })
+        return managePhotos({ location })
+    })
+    .then(() => {
+        return cb()
+    })
+    .catch(err => {
+        slack({
+            slackMsg: {
+                step: 'takePhoto',
+                err
+            }
+        })
+    })
+    
 })
 
-export const enqueue = ({ msg, queue, getSetting }) => new Promise((resolve, reject) => {
+export const enqueue = ({ msg, queue, getSetting, slack }) => new Promise((resolve, reject) => {
   console.log('Queueing message - camera: ', msg)
-  queue.push({ msg, getSetting })
+  queue.push({ msg, getSetting, slack })
   return resolve()
 })
 
