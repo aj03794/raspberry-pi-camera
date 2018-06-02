@@ -3,7 +3,7 @@ export const slack = ({
     channel = 'slack',
 }) => ({
     slackMsg,
-    slackChannel='cd'
+    slackChannel='camera'
 }) => new Promise((resolve, reject) => {
     publish()
     .then(({ connect }) => connect())
