@@ -1,7 +1,7 @@
-import { exec } from 'child_process'
-import { cwd } from 'process'
+const { exec } = require('child_process')
+const { cwd } = require('process')
 
-export const doGitCommit = () => new Promise((resolve, reject) => {
+const doGitCommit = () => new Promise((resolve, reject) => {
     exec(`git commit -am 'New release'`, { cwd: cwd()}, (err, stdout, stderr) => {
         if (err) {
             resolve()

@@ -2,6 +2,9 @@
 import { getSetting } from './settings'
 import { slack as createSlack } from './slack'
 
+// const cloudStorageProvider = process.env['cloudStorage'].toLowerCase()
+// const pubsubProvider = process.env['pubsub'].toLowerCase()
+
 const cloudStorageProvider = getSetting('cloudStorage')
 const pubsubProvider = getSetting('pubsub')
 const cameraProvider = getSetting('camera')
