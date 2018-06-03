@@ -14,6 +14,7 @@ export const doFakePhoto = ({
     msgToSend,
     getSetting
 }) => new Promise((resolve, reject) => {
+    console.log('Taking fake photo')
     const previewMode = getPreviewMode({ getSetting })
     const cameraTimeout = getCameraTimeout({ getSetting })
     console.log('previewMode', previewMode)
@@ -29,6 +30,7 @@ export const doRealPhoto = ({
     msgToSend,
     getSetting
 }) => new Promise((resolve, reject) => {
+    console.log('Taking real photo')
     const previewMode = getPreviewMode({ getSetting })
     const cameraTimeout = getCameraTimeout({ getSetting })
     console.log('previewMode', previewMode)
