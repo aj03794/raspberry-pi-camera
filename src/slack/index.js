@@ -1,9 +1,9 @@
 export const slack = ({
     publish,
-    channel = 'general',
+    channel = 'slack',
 }) => ({
     slackMsg,
-    slackChannel='camera'
+    slackChannel='general'
 }) => new Promise((resolve, reject) => {
     publish()
     .then(({ connect }) => connect())
