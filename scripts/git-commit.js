@@ -9,3 +9,8 @@ const doGitCommit = () => new Promise((resolve, reject) => {
         resolve()
     })
 })
+
+doGitCommit()
+.then(() => {
+    return
+})
