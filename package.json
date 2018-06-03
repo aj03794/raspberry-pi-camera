@@ -9,7 +9,7 @@
     "start": "npm run build && node dist/bundle.js",
     "start-dev": "npm run build && node dist/bundle.js dev",
     "test": "exit 0",
-    "version-patch": "npm version patch",
+    "version-patch": "git commit -am 'New release' && npm version patch",
     "postversion": "git push"
   },
   "keywords": [],
