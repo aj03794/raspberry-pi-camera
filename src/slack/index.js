@@ -1,6 +1,6 @@
 export const slack = ({
     publish,
-    channel = 'slack',
+    channel = 'general',
 }) => ({
     slackMsg,
     slackChannel='camera'
