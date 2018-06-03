@@ -4,7 +4,6 @@ import { slack as createSlack } from './slack'
 
 // const cloudStorageProvider = process.env['cloudStorage'].toLowerCase()
 // const pubsubProvider = process.env['pubsub'].toLowerCase()
-// const cameraProvider = process.env['camera'].toLowerCase()
 
 const cloudStorageProvider = getSetting('cloudStorage')
 const pubsubProvider = getSetting('pubsub')
