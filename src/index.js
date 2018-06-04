@@ -1,6 +1,7 @@
 // require('dotenv').config()
 import { getSetting } from './settings'
 import { slack as createSlack } from './slack'
+import { manageFolder } from './manage-folder'
 
 const cloudStorageProvider = getSetting('cloudStorage')
 const pubsubProvider = getSetting('pubsub')
@@ -33,8 +34,8 @@ import(`./pub-sub`)
                     publish,
                     subscribe
                 }
-                cloudStorage({ ...pubsubFunctions, getSetting, slack })
-                camera({ ...pubsubFunctions, getSetting, slack })
+                cloudStorage({ ...pubsubFunctions, getSetting, slack, manageFolder })
+                camera({ ...pubsubFunctions, getSetting, slack, manageFolder })
                 return
             })
         }

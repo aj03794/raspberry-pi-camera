@@ -8,7 +8,8 @@ import { cwd } from 'process'
 export const localStorage = ({
 	publish,
 	subscribe,
-	getSetting
+	getSetting,
+	manageFolder
 }) => {
 	console.log('-------------------------')
 	console.log('localCloudStorage')
@@ -22,12 +23,12 @@ export const localStorage = ({
 		filterMsgs(msg => {
 			return msg.data
 		}).subscribe(msg => {
-			return enqueue({ msg, queue, getSetting })
+			return enqueue({ msg, queue, getSetting, manageFolder })
 		})
 	})
 }
 
-export const doPhotoUpload = ({ msg, getSetting }) => new Promise((resolve, reject) => {
+export const doPhotoUpload = ({ msg, getSetting, manageFolder }) => new Promise((resolve, reject) => {
 	console.log('-------------------------')
 	console.log('doPhotoUpload - local')
 	// const bucketName = process.env.BUCKET_NAME
@@ -35,10 +36,7 @@ export const doPhotoUpload = ({ msg, getSetting }) => new Promise((resolve, reje
 	console.log('MSG', msg)
 	const { folder, name: file, location } = JSON.parse(msg.data[1])
 	console.log('folder', folder)
-	// console.log
-	// const location = resolvePath(__dirname, '../../', 'camera', 'raspicam', folder)
-	// const location = resolvePath(cwd(), )
-
+	console.log('asdfasf', resolvePath(cwd(), 'buckets', bucketName))
 	console.log('===========>', location)
 	const storage = new Storage({
 		// projectId: process.env.PROJECT_ID
@@ -55,6 +53,10 @@ export const doPhotoUpload = ({ msg, getSetting }) => new Promise((resolve, reje
 		return
 	})
 	.then(() => uploadFile({ storage, bucketName, file, location }))
+	.then(() => manageFolder({
+		location:  resolvePath(cwd(), 'buckets', bucketName),
+		maxFiles: 20
+	}))
 	.then(() => {
 		console.log('Upload successful')
 		resolve({
@@ -72,8 +74,8 @@ export const q = ({ publish }) => queue(({ msg, getSetting }, cb) => {
 	.then(cb)
 })
 
-export const enqueue = ({ msg, queue, getSetting }) => new Promise((resolve, reject) => {
+export const enqueue = ({ msg, queue, getSetting, manageFolder }) => new Promise((resolve, reject) => {
     console.log('Queueing message: ', msg)
-	queue.push({ msg, getSetting })
+	queue.push({ msg, getSetting, manageFolder })
     return resolve()
 })
