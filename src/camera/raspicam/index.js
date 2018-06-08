@@ -21,7 +21,6 @@ export const raspicam = ({
     subscribe({
         channel: 'motion sensor'
     })
-    .then(({ connect }) => connect())
     .then(({ allMsgs, filterMsgs }) => {
         filterMsgs(msg => {
             if (msg.data) {
@@ -50,16 +49,24 @@ export const q = ({ publish }) => queue(({ msg, getSetting, slack }, cb) => {
         console.log('location', location)
         console.log('folder', folder)
         console.log('name', name)
-        publish()
-            .then(({ connect }) => connect())
-            .then(({ send }) => send({
-                channel: 'cloud storage',
-                data: {
-                    folder,
-                    name,
-                    location
-                }
-            }))
+        publish({
+            channel: 'cloud storage',
+            data: {
+                folder,
+                name,
+                location
+            }
+        })
+        // publish()
+        //     .then(({ connect }) => connect())
+        //     .then(({ send }) => send({
+        //         channel: 'cloud storage',
+        //         data: {
+        //             folder,
+        //             name,
+        //             location
+        //         }
+        //     }))
         return { location }
     })
     .then(({

@@ -5,19 +5,14 @@ export const slack = ({
     slackMsg,
     slackChannel='general'
 }) => new Promise((resolve, reject) => {
-    publish()
-    .then(({ connect }) => connect())
-    .then(({ send }) => {
-
-        send({
-            channel,
-            data: {
-                slackData: {
-                    channel: slackChannel,
-                    msg: slackMsg
-                }
+    publish({
+        channel,
+        data: {
+            slackData: {
+                channel: slackChannel,
+                msg: slackMsg
             }
-        })
+        }
     })
     resolve()
 })

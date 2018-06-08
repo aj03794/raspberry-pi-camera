@@ -16,8 +16,8 @@ export const localStorage = ({
 	subscribe({
 		channel: 'cloud storage'
 	})
-	.then(({ connect }) => connect())
-	.catch(e => console.log('asdfasfsafsf', e))
+	// .then(({ connect }) => connect())
+	// .catch(e => console.log('asdfasfsafsf', e))
 	.then(({ allMsgs, filterMsgs }) => {
 		filterMsgs(msg => {
 			return msg.data
@@ -35,6 +35,8 @@ export const doPhotoUpload = ({ msg, getSetting }) => new Promise((resolve, reje
 	console.log('MSG', msg)
 	const { folder, name: file, location } = JSON.parse(msg.data[1])
 	console.log('folder', folder)
+	console.log('LOCATION', location)
+	console.log('FILE', file)
 	// console.log
 	// const location = resolvePath(__dirname, '../../', 'camera', 'raspicam', folder)
 	// const location = resolvePath(cwd(), )
