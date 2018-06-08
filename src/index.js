@@ -34,7 +34,7 @@ import(`./pub-sub`)
                 publish,
                 subscribe
             }
-            cloudStorage({ ...pubsubFunctions, getSetting, slack })
+            // cloudStorage({ ...pubsubFunctions, getSetting, slack })
             camera({ ...pubsubFunctions, getSetting, slack })
             return
        })
