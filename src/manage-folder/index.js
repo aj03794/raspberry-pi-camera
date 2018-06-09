@@ -1,9 +1,9 @@
 import { readdir as readDir, existsSync, unlink } from 'fs'
 import { resolve as resolvePath } from 'path'
 
-export const managePhotos = ({ location }) => new Promise((resolve, reject) => {
+export const manageFolder = ({ location, maxFiles }) => new Promise((resolve, reject) => {
 	if (existsSync(location)) {
-		return readFolder({ location })
+		return readFolder({ location, maxFiles })
 		.then(deleteFiles)
 		.then(resolve)
 		.catch(e => reject(err))
@@ -12,8 +12,8 @@ export const managePhotos = ({ location }) => new Promise((resolve, reject) => {
 	return resolve()
 })
 
-export const deleteFiles = ({ files, location }) => new Promise((resolve, reject) => {
-	if (files.length > 5) {
+export const deleteFiles = ({ files, location, maxFiles }) => new Promise((resolve, reject) => {
+	if (files.length > maxFiles) {
 		console.log('Deleting oldest photo')
 		const filePath = resolvePath(location, files[0])
 		return unlink(filePath, err => {
@@ -27,13 +27,13 @@ export const deleteFiles = ({ files, location }) => new Promise((resolve, reject
 	return resolve()
 })
 
-export const readFolder = ({ location }) => new Promise((resolve, reject) => {
+export const readFolder = ({ location, maxFiles }) => new Promise((resolve, reject) => {
 	return readDir(location, (err, files) => {
 		if (err) {
 			console.log('Err reading dir', err)
 			reject({ msg: 'Error - reading folder', err })
 		}
 		console.log('files', files)
-		return resolve({ files, location })
+		return resolve({ files, location, maxFiles })
 	})
 })

@@ -1,5 +1,6 @@
 import { getSetting } from './settings'
 import { slack as createSlack } from './slack'
+import { manageFolder } from './manage-folder'
 
 const pubsubProvider = getSetting('pubsub')
 const cameraProvider = getSetting('camera')
@@ -31,7 +32,7 @@ Promise.all(imports)
             publish,
             subscribe
         }
-        camera({ ...pubsubFunctions, getSetting, slack })
+        camera({ ...pubsubFunctions, getSetting, slack, manageFolder })
         return
     })
 })
