@@ -1,7 +1,7 @@
 // import RaspiCam from 'raspicam'
 import { resolve as resolvePath } from 'path'
 import { ensureDirSync } from 'fs-extra'
-import { managePhotos } from './manage-photos'
+// import { managePhotos } from './manage-photos'
 import { doFakePhoto, doRealPhoto } from './photo'
 import { queue } from 'async'
 import dateTime from 'date-time'
@@ -14,7 +14,8 @@ export const raspicam = ({
     publish,
     subscribe,
     getSetting,
-    slack
+    slack,
+    manageFolder
 }) => {
     console.log('---->', timestamp())
     const queue = q({ publish })
@@ -35,12 +36,12 @@ export const raspicam = ({
         .subscribe(msg => {
             console.log('msg', msg)
             console.log('filteredMsg - raspicam', msg)
-            enqueue({ msg, queue, getSetting, slack })
+            enqueue({ msg, queue, getSetting, slack, manageFolder })
         })
     })
 }
 
-export const q = ({ publish }) => queue(({ msg, getSetting, slack }, cb) => {
+export const q = ({ publish }) => queue(({ msg, getSetting, slack, manageFolder }, cb) => {
     takePhoto({ date: new Date(), getSetting })
     .then(({
         location,
@@ -71,7 +72,7 @@ export const q = ({ publish }) => queue(({ msg, getSetting, slack }, cb) => {
                 timestamp: timestamp()
             }
         })
-        return managePhotos({ location })
+        return manageFolder({ location, maxFiles: 5 })
     })
     .then(() => {
         return cb()
@@ -87,9 +88,9 @@ export const q = ({ publish }) => queue(({ msg, getSetting, slack }, cb) => {
     
 })
 
-export const enqueue = ({ msg, queue, getSetting, slack }) => new Promise((resolve, reject) => {
+export const enqueue = ({ msg, queue, getSetting, slack, manageFolder }) => new Promise((resolve, reject) => {
   console.log('Queueing message - camera: ', msg)
-  queue.push({ msg, getSetting, slack })
+  queue.push({ msg, getSetting, slack, manageFolder })
   return resolve()
 })
 
