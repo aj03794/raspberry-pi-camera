@@ -31,7 +31,7 @@ export const doRealPhoto = ({
     const cameraTimeout = getCameraTimeout({ getSetting })
     console.log('previewMode', previewMode)
     console.log('cameraTimeout', cameraTimeout)
-    return exec(`raspistill -md 3 ${cameraTimeout} ${previewMode} -o ${name}`,
+    return exec(`raspistill -md 3 ${cameraTimeout} ${previewMode} -o "${name}"`,
         {
             cwd: location
         },
