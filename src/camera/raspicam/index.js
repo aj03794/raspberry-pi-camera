@@ -7,7 +7,8 @@ import { queue } from 'async'
 import dateTime from 'date-time'
 
 const timestamp = () => {
-    return dateTime({ local: true , showMilliseconds: true})
+    console.log('DATETIME', dateTime({ local: true }))
+    return dateTime({ local: true })
 }
 
 export const raspicam = ({
@@ -33,7 +34,6 @@ export const raspicam = ({
             return false
         })
         .subscribe(msg => {
-            console.log('msg', msg)
             console.log('filteredMsg - raspicam', msg)
             enqueue({ msg, queue, getSetting, slack, manageFolder })
         })
@@ -41,7 +41,7 @@ export const raspicam = ({
 }
 
 export const q = ({ publish }) => queue(({ msg, getSetting, slack, manageFolder }, cb) => {
-    takePhoto({ date: new Date(), getSetting })
+    takePhoto({ getSetting })
     .then(({
         location,
         folder,
@@ -86,17 +86,16 @@ export const q = ({ publish }) => queue(({ msg, getSetting, slack, manageFolder 
 })
 
 export const enqueue = ({ msg, queue, getSetting, slack, manageFolder }) => new Promise((resolve, reject) => {
-  console.log('Queueing message - camera: ', msg)
   queue.push({ msg, getSetting, slack, manageFolder })
   return resolve()
 })
 
 // TODO: Move this to photo.js and make doTakePhoto a function
-export const takePhoto = ({ date, getSetting }) => new Promise((resolve, reject) => {
+export const takePhoto = ({ getSetting }) => new Promise((resolve, reject) => {
     const location = resolvePath(__dirname, 'pictures')
     const folder = 'pictures'
     // console.log('LOCATION', location)
-    const name = `${date.getMonth()}-${date.getDate()}-${date.getFullYear()}-${date.getHours()}:${date.getMinutes()}::${date.getSeconds()}.jpg`
+    const name = `${timestamp()}.jpg`
     return ensureDirExists({ location })
     .then(({ location }) => {
       return getSetting('dev') === true
