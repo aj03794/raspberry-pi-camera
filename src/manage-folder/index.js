@@ -1,4 +1,4 @@
-import { readdir as readDir, existsSync, unlink } from 'fs'
+import { readdir as readDir, existsSync, remove } from 'fs-extra'
 import { resolve as resolvePath } from 'path'
 
 export const manageFolder = ({ location, maxFiles }) => new Promise((resolve, reject) => {
@@ -14,12 +14,12 @@ export const manageFolder = ({ location, maxFiles }) => new Promise((resolve, re
 
 export const deleteFiles = ({ files, location, maxFiles }) => new Promise((resolve, reject) => {
 	if (files.length > maxFiles) {
-		console.log('Deleting oldest photo')
+		console.log('Deleting oldest photo', files[0])
 		const filePath = resolvePath(location, files[0])
-		return unlink(filePath, err => {
+		return remove(filePath, err => {
 			if (err) {
 				console.log('Error - deleteFiles', err)
-				return reject({msg: 'Error -deleteFiles', err})
+				return reject({msg: 'Error - deleteFiles', err})
 			}
 			return resolve()
 		})
