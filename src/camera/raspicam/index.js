@@ -1,27 +1,28 @@
 // import RaspiCam from 'raspicam'
 import { resolve as resolvePath } from 'path'
 import { ensureDirSync } from 'fs-extra'
-import { managePhotos } from './manage-photos'
+// import { managePhotos } from './manage-photos'
 import { doFakePhoto, doRealPhoto } from './photo'
 import { queue } from 'async'
 import dateTime from 'date-time'
 
 const timestamp = () => {
-    return dateTime({ local: true , showMilliseconds: true})
+    console.log('DATETIME', dateTime({ local: true }))
+    return dateTime({ local: true })
 }
 
 export const raspicam = ({
     publish,
     subscribe,
     getSetting,
-    slack
+    slack,
+    manageFolder
 }) => {
     console.log('---->', timestamp())
     const queue = q({ publish })
     subscribe({
         channel: 'motion sensor'
     })
-    .then(({ connect }) => connect())
     .then(({ allMsgs, filterMsgs }) => {
         filterMsgs(msg => {
             if (msg.data) {
@@ -33,15 +34,14 @@ export const raspicam = ({
             return false
         })
         .subscribe(msg => {
-            console.log('msg', msg)
             console.log('filteredMsg - raspicam', msg)
-            enqueue({ msg, queue, getSetting, slack })
+            enqueue({ msg, queue, getSetting, slack, manageFolder })
         })
     })
 }
 
-export const q = ({ publish }) => queue(({ msg, getSetting, slack }, cb) => {
-    takePhoto({ date: new Date(), getSetting })
+export const q = ({ publish }) => queue(({ msg, getSetting, slack, manageFolder }, cb) => {
+    takePhoto({ getSetting })
     .then(({
         location,
         folder,
@@ -50,16 +50,14 @@ export const q = ({ publish }) => queue(({ msg, getSetting, slack }, cb) => {
         console.log('location', location)
         console.log('folder', folder)
         console.log('name', name)
-        publish()
-            .then(({ connect }) => connect())
-            .then(({ send }) => send({
-                channel: 'cloud storage',
-                data: {
-                    folder,
-                    name,
-                    location
-                }
-            }))
+        publish({
+            channel: 'cloud storage',
+            data: {
+                folder,
+                name,
+                location
+            }
+        })
         return { location }
     })
     .then(({
@@ -71,7 +69,7 @@ export const q = ({ publish }) => queue(({ msg, getSetting, slack }, cb) => {
                 timestamp: timestamp()
             }
         })
-        return managePhotos({ location })
+        return manageFolder({ location, maxFiles: 5 })
     })
     .then(() => {
         return cb()
@@ -87,18 +85,17 @@ export const q = ({ publish }) => queue(({ msg, getSetting, slack }, cb) => {
     
 })
 
-export const enqueue = ({ msg, queue, getSetting, slack }) => new Promise((resolve, reject) => {
-  console.log('Queueing message - camera: ', msg)
-  queue.push({ msg, getSetting, slack })
+export const enqueue = ({ msg, queue, getSetting, slack, manageFolder }) => new Promise((resolve, reject) => {
+  queue.push({ msg, getSetting, slack, manageFolder })
   return resolve()
 })
 
 // TODO: Move this to photo.js and make doTakePhoto a function
-export const takePhoto = ({ date, getSetting }) => new Promise((resolve, reject) => {
+export const takePhoto = ({ getSetting }) => new Promise((resolve, reject) => {
     const location = resolvePath(__dirname, 'pictures')
     const folder = 'pictures'
     // console.log('LOCATION', location)
-    const name = `${date.getMonth()}-${date.getDate()}-${date.getFullYear()}-${date.getHours()}:${date.getMinutes()}::${date.getSeconds()}.jpg`
+    const name = `${timestamp()}.jpg`
     return ensureDirExists({ location })
     .then(({ location }) => {
       return getSetting('dev') === true

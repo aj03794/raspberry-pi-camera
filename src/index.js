@@ -1,41 +1,38 @@
-// require('dotenv').config()
 import { getSetting } from './settings'
 import { slack as createSlack } from './slack'
+import { manageFolder } from './manage-folder'
 
-const cloudStorageProvider = getSetting('cloudStorage')
 const pubsubProvider = getSetting('pubsub')
 const cameraProvider = getSetting('camera')
 
-
-console.log('cloudStorageProvider', cloudStorageProvider)
 console.log('pubsubProvider', pubsubProvider)
 console.log('cameraProvider', cameraProvider)
 
+const imports = [
+    import('./pub-sub'),
+    import(`./camera`)
+]
 
-import(`./pub-sub`)
-    .then(({
-        [pubsubProvider]: pubsub
-    }) => pubsub())
-    .then(({
-        subscribe,
-        publish
-    }) => {
+Promise.all(imports)
+.then(([
+    { [pubsubProvider]: pubsub },
+    { [cameraProvider]: camera }
+]) => {
+    const { publisherCreator, subscriberCreator } = pubsub()
+    return Promise.all([
+        publisherCreator(),
+        subscriberCreator()
+    ])
+    .then(([
+        { publish },
+        { subscribe }
+    ]) => {
         const slack = createSlack({ publish })
-        return Promise.all([
-            import(`./cloud-storage`),
-            import(`./camera`)
-        ])
-            .then(([
-                { [cloudStorageProvider]: cloudStorage },
-                { [cameraProvider]: camera }
-            ]) => {
-                const pubsubFunctions = {
-                    publish,
-                    subscribe
-                }
-                cloudStorage({ ...pubsubFunctions, getSetting, slack })
-                camera({ ...pubsubFunctions, getSetting, slack })
-                return
-            })
+        const pubsubFunctions = {
+            publish,
+            subscribe
         }
-    )
+        camera({ ...pubsubFunctions, getSetting, slack, manageFolder })
+        return
+    })
+})
