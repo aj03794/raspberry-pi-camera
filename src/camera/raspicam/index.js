@@ -98,7 +98,7 @@ export const takePhoto = ({ getSetting }) => new Promise((resolve, reject) => {
     const name = `${timestamp()}.jpg`
     return ensureDirExists({ location })
     .then(({ location }) => {
-      return getSetting('dev') === true
+      return process.argv[2] === 'dev'
           ? doFakePhoto({ getSetting, location, name, msgToSend })
           : doRealPhoto({ getSetting, location, name, msgToSend })
     })
