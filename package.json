@@ -43,7 +43,7 @@
     "async": "^2.6.0",
     "date-time": "^2.1.0",
     "fs-extra": "^5.0.0",
-    "pub-sub-redis": "0.0.2",
+    "pub-sub-redis": "0.0.3",
     "raspicam": "^0.2.14"
   }
 }
