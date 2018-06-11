@@ -5,6 +5,8 @@ import { manageFolder } from './manage-folder'
 const pubsubProvider = getSetting('pubsub')
 const cameraProvider = getSetting('camera')
 
+console.log('New redis setup')
+
 console.log('pubsubProvider', pubsubProvider)
 console.log('cameraProvider', cameraProvider)
 
