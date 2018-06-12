@@ -53,6 +53,7 @@ export const q = ({ publish }) => queue(({ msg, getSetting, slack, manageFolder 
         publish({
             channel: 'cloud storage',
             data: {
+                uuid: process.argv[2] === 'dev' ? 'dev' : process.env.UUID,
                 folder,
                 name,
                 location
