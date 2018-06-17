@@ -3,5 +3,6 @@
 	"camera": "raspicam",
 	"cameraPreview": false,
 	"cameraTimeout": 500,
-	"ipAddress": "127.0.0.1"
+	"ipAddress": "127.0.0.1",
+	"googleApplicationCredentials": "gcp-service-account.json"
 }

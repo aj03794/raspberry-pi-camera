@@ -16,7 +16,9 @@ export const raspicam = ({
     subscribe,
     getSetting,
     slack,
-    manageFolder
+    manageFolder,
+    allGcpMsgs,
+    filterGcpMsgs
 }) => {
     console.log('---->', timestamp())
     const queue = q({ publish })
@@ -38,10 +40,41 @@ export const raspicam = ({
             enqueue({ msg, queue, getSetting, slack, manageFolder })
         })
     })
+    filterGcpMsgs(msg => {
+        if (
+            msg
+            && msg.data
+            && msg.data.message
+            && msg.data.message.data
+            && msg.data.message.data.body
+            && msg.data.message.data.body.command
+        ) {
+            if (msg.data.message.data.body.command === '/take-photo'){
+                return true
+            }
+            return false
+        }
+        return false
+    }).subscribe(msg => {
+        const uploadFileToSlack = ({ file }) => new Promise((resolve, reject) => {
+            slack({
+                slackMsg: {
+                    meta: {
+                        timestamp: timestamp()
+                    },
+                    msg: 'Photo upload successful - local',
+                    operation: 'FILE_UPLOAD',
+                    file
+                }
+            })
+            return resolve()
+        })
+        enqueue({ msg, queue, getSetting, slack, manageFolder, uploadFileToSlack })
+    })
 }
 
-export const q = ({ publish }) => queue(({ msg, getSetting, slack, manageFolder }, cb) => {
-    takePhoto({ getSetting })
+export const q = ({ publish }) => queue((params, cb) => {
+    takePhoto(params)
     .then(({
         location,
         folder,
@@ -86,13 +119,18 @@ export const q = ({ publish }) => queue(({ msg, getSetting, slack, manageFolder 
     
 })
 
-export const enqueue = ({ msg, queue, getSetting, slack, manageFolder }) => new Promise((resolve, reject) => {
-  queue.push({ msg, getSetting, slack, manageFolder })
-  return resolve()
+export const enqueue = ({ queue, ...params}) => new Promise((resolve, reject) => {
+
+    queue.push(params)
+    return resolve()
 })
 
 // TODO: Move this to photo.js and make doTakePhoto a function
-export const takePhoto = ({ getSetting }) => new Promise((resolve, reject) => {
+export const takePhoto = ({
+    getSetting,
+    uploadFileToSlack = null
+}) => new Promise((resolve, reject) => {
+    console.log('HELLO')
     const location = resolvePath(__dirname, 'pictures')
     const folder = 'pictures'
     // console.log('LOCATION', location)
@@ -103,7 +141,15 @@ export const takePhoto = ({ getSetting }) => new Promise((resolve, reject) => {
           ? doFakePhoto({ getSetting, location, name, msgToSend })
           : doRealPhoto({ getSetting, location, name, msgToSend })
     })
-    .then(({ data: { location, name } }) => resolve({ location, folder, name }))
+    .then(({ data: { location, name } }) => {
+        if (uploadFileToSlack) {
+            const file = resolvePath(location, name)
+            console.log('FILE', file)
+            uploadFileToSlack({ file })
+            return
+        }
+        return resolve({ location, folder, name })
+    })
 })
 
 export const ensureDirExists = ({ location }) => new Promise((resolve, reject) => {

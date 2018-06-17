@@ -15,31 +15,45 @@ console.log('cameraProvider', cameraProvider)
 
 const imports = [
     import('./pub-sub'),
-    import(`./camera`)
+    import(`./camera`),
+    import(`./pub-sub/gcp`)
 ]
 
 Promise.all(imports)
 .then(([
     { [pubsubProvider]: pubsub },
-    { [cameraProvider]: camera }
+    { [cameraProvider]: camera },
+    { gcp }
 ]) => {
+
     const { publisherCreator, subscriberCreator } = pubsub({
         host: process.argv[2] === 'dev' ? '127.0.0.1' : 'main.local'
     })
     return Promise.all([
         publisherCreator(),
-        subscriberCreator()
+        subscriberCreator(),
+        gcp({ getSetting })
     ])
     .then(([
         { publish },
-        { subscribe }
+        { subscribe },
+        { allGcpMsgs, filterGcpMsgs }
     ]) => {
         const slack = createSlack({ publish })
+        const gcpFunctions = {
+            allGcpMsgs,
+            filterGcpMsgs
+        }
         const pubsubFunctions = {
             publish,
             subscribe
         }
-        camera({ ...pubsubFunctions, getSetting, slack, manageFolder })
-        return
+        return camera({
+            ...pubsubFunctions,
+            getSetting,
+            slack,
+            manageFolder,
+            ...gcpFunctions
+        })
     })
 })
