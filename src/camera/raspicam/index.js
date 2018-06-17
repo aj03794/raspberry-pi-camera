@@ -2,7 +2,7 @@
 import { resolve as resolvePath } from 'path'
 import { ensureDirSync } from 'fs-extra'
 // import { managePhotos } from './manage-photos'
-import { doFakePhoto, doRealPhoto } from './photo'
+import { takePhoto } from './photo'
 import { queue } from 'async'
 import dateTime from 'date-time'
 
@@ -74,7 +74,9 @@ export const raspicam = ({
 }
 
 export const q = ({ publish }) => queue((params, cb) => {
-    takePhoto(params)
+    console.log('msgToSend', msgToSend)
+    const { slack, manageFolder } = params
+    takePhoto({ ...params, msgToSend })
     .then(({
         location,
         folder,
@@ -120,41 +122,8 @@ export const q = ({ publish }) => queue((params, cb) => {
 })
 
 export const enqueue = ({ queue, ...params}) => new Promise((resolve, reject) => {
-
     queue.push(params)
     return resolve()
-})
-
-// TODO: Move this to photo.js and make doTakePhoto a function
-export const takePhoto = ({
-    getSetting,
-    uploadFileToSlack = null
-}) => new Promise((resolve, reject) => {
-    console.log('HELLO')
-    const location = resolvePath(__dirname, 'pictures')
-    const folder = 'pictures'
-    // console.log('LOCATION', location)
-    const name = `${timestamp()}.jpg`
-    return ensureDirExists({ location })
-    .then(({ location }) => {
-      return process.argv[2] === 'dev'
-          ? doFakePhoto({ getSetting, location, name, msgToSend })
-          : doRealPhoto({ getSetting, location, name, msgToSend })
-    })
-    .then(({ data: { location, name } }) => {
-        if (uploadFileToSlack) {
-            const file = resolvePath(location, name)
-            console.log('FILE', file)
-            uploadFileToSlack({ file })
-            return
-        }
-        return resolve({ location, folder, name })
-    })
-})
-
-export const ensureDirExists = ({ location }) => new Promise((resolve, reject) => {
-    ensureDirSync(location)
-    return resolve({ location })
 })
 
 export const msgToSend = ({ location, name }) => {

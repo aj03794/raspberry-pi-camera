@@ -1,10 +1,42 @@
-import { writeFileSync } from 'fs-extra'
+import { writeFileSync, ensureDirSync } from 'fs-extra'
 import { exec } from 'child_process'
+import { resolve as resolvePath } from 'path'
+import dateTime from 'date-time'
+
+const timestamp = () => {
+    console.log('DATETIME', dateTime({ local: true }))
+    return dateTime({ local: true })
+}
 
 const getPreviewMode = ({ getSetting }) => getSetting('cameraPreview') === true ? `-p` : `-n`
 const getCameraTimeout = ({ getSetting }) => {
     return getSetting('cameraTimeout') ? `-t ${getSetting('cameraTimeout')}` : `-t 500`
 }
+
+export const takePhoto = ({
+    getSetting,
+    uploadFileToSlack = null,
+    msgToSend
+}) => new Promise((resolve, reject) => {
+    console.log('HELLO')
+    const location = resolvePath(__dirname, 'pictures')
+    const folder = 'pictures'
+    // console.log('LOCATION', location)
+    const name = `${timestamp()}.jpg`
+    return ensureDirExists({ location })
+    .then(({ location }) => {
+      return process.argv[2] === 'dev'
+          ? doFakePhoto({ getSetting, location, name, msgToSend })
+          : doRealPhoto({ getSetting, location, name, msgToSend })
+    })
+    .then(({ data: { location, name } }) => {
+        if (uploadFileToSlack) {
+            const file = resolvePath(location, name)
+            uploadFileToSlack({ file })
+        }
+        return resolve({ location, folder, name })
+    })
+})
 
 export const doFakePhoto = ({
     location,
@@ -44,4 +76,9 @@ export const doRealPhoto = ({
             return resolve(msg)
         }
     )
+})
+
+export const ensureDirExists = ({ location }) => new Promise((resolve, reject) => {
+    ensureDirSync(location)
+    return resolve({ location })
 })
