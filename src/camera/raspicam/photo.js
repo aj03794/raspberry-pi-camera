@@ -4,7 +4,6 @@ import { resolve as resolvePath } from 'path'
 import dateTime from 'date-time'
 
 const timestamp = () => {
-    console.log('DATETIME', dateTime({ local: true }))
     return dateTime({ local: true })
 }
 
@@ -18,7 +17,6 @@ export const takePhoto = ({
     uploadFileToSlack = null,
     msgToSend
 }) => new Promise((resolve, reject) => {
-    console.log('HELLO')
     const location = resolvePath(__dirname, 'pictures')
     const folder = 'pictures'
     // console.log('LOCATION', location)

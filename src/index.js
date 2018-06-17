@@ -42,7 +42,7 @@ Promise.all(imports)
         const slack = createSlack({ publish })
         const gcpFunctions = {
             allGcpMsgs,
-            filterGcpMsgs
+            filterGcpMsgs,
         }
         const pubsubFunctions = {
             publish,

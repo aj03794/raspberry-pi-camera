@@ -74,7 +74,6 @@ export const raspicam = ({
 }
 
 export const q = ({ publish }) => queue((params, cb) => {
-    console.log('msgToSend', msgToSend)
     const { slack, manageFolder } = params
     takePhoto({ ...params, msgToSend })
     .then(({
