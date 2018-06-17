@@ -29,7 +29,7 @@ export const gcp = ({
       },
       data: {
         message: JSON.parse(message.data.toString('utf-8'))
-      },
+      }
     })
     message.ack()
   }
