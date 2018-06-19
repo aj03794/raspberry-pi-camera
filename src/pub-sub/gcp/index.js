@@ -2,6 +2,7 @@ import PubSub from '@google-cloud/pubsub'
 import { createSubject } from 'create-subject-with-filter'
 import { resolve as resolvePath } from 'path'
 import { cwd } from 'process'
+import { homedir } from 'os'
 
 export const gcp = ({
   getSetting
@@ -15,7 +16,8 @@ export const gcp = ({
 
   const gcpCreds = getSetting('googleApplicationCredentials')
   const subscriptionName = 'projects/smart-home-monitoring-system/subscriptions/take-photo'
-	const keyFilename = resolvePath(cwd(), gcpCreds)
+  const keyFilename = resolvePath(homedir(), 'gcp-creds', gcpCreds)
+  console.log('keyFilename', keyFilename)
 	const pubsub = new PubSub({
 		keyFilename
   })
