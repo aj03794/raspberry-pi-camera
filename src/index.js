@@ -15,7 +15,8 @@ console.log('UUID ----->', process.env.UUID || 'dev')
 
 const pubsubProviders = getSetting('pubsub').map(pubsubProvider => {
     console.log('pubsubProvider', pubsubProvider)
-    const x = import(`./pub-sub`)
+    import(`./pub-sub`)
+    .then
     console.log('X', x)
     return x
 })
