@@ -1,5 +1,8 @@
 {
-	"pubsub": "redis",
+	"pubsub": [
+		"redis",
+		"gcp"
+	],
 	"camera": "raspicam",
 	"cameraPreview": false,
 	"cameraTimeout": 500,
