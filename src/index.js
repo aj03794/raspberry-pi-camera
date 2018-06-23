@@ -34,7 +34,7 @@ Promise.all(imports)
     return Promise.all([
         publisherCreator(),
         subscriberCreator(),
-        gcp({ getSetting, UUID })
+        gcp({ getSetting, uuid })
     ])
     .then(([
         { publish },

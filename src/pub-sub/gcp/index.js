@@ -6,7 +6,7 @@ import { homedir } from 'os'
 
 export const gcp = ({
   getSetting,
-  UUID
+  uuid
 }) => new Promise((resolve, reject) => {
   console.log('GCP')
   const {
@@ -16,7 +16,7 @@ export const gcp = ({
   } = createSubject()
 
   const gcpCreds = getSetting('googleApplicationCredentials')
-  const subscriptionName = `projects/smart-home-monitoring-system/subscriptions/take-photo-${UUID}`
+  const subscriptionName = `projects/smart-home-monitoring-system/subscriptions/take-photo-${uuid}`
   const keyFilename = resolvePath(homedir(), 'gcp-creds', gcpCreds)
   console.log('keyFilename', keyFilename)
 	const pubsub = new PubSub({
