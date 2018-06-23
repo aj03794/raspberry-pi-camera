@@ -1,3 +1,5 @@
+import { address } from 'ip'
+
 export const slack = ({
     publish,
     channel = 'slack',
@@ -8,6 +10,9 @@ export const slack = ({
     publish({
         channel,
         data: {
+            meta: {
+                ipAddress: address()
+            },
             slackData: {
                 channel: slackChannel,
                 msg: slackMsg
