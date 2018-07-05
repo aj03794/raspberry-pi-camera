@@ -1,6 +1,6 @@
 {
   "name": "raspberry-pi-camera",
-  "version": "0.0.131",
+  "version": "0.0.134",
   "description": "",
   "main": "index.js",
   "scripts": {
