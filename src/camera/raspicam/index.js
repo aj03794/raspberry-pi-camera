@@ -7,7 +7,6 @@ import { queue } from 'async'
 import dateTime from 'date-time'
 
 const timestamp = () => {
-    console.log('DATETIME', dateTime({ local: true }))
     return dateTime({ local: true })
 }
 
@@ -20,7 +19,6 @@ export const raspicam = ({
     allGcpMsgs,
     filterGcpMsgs
 }) => {
-    console.log('---->', timestamp())
     const queue = q({ publish })
     subscribe({
         channel: 'motion sensor'
@@ -41,6 +39,7 @@ export const raspicam = ({
         })
     })
     filterGcpMsgs(msg => {
+        console.log('Timestamp', timestamp())
         if (
             msg
             && msg.data
@@ -81,9 +80,6 @@ export const q = ({ publish }) => queue((params, cb) => {
         folder,
         name
     }) => {
-        console.log('location', location)
-        console.log('folder', folder)
-        console.log('name', name)
         publish({
             channel: 'cloud storage',
             data: {

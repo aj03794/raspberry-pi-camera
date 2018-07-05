@@ -5,10 +5,7 @@ import { manageFolder } from './manage-folder'
 const pubsubProvider = getSetting('pubsub')
 const cameraProvider = getSetting('camera')
 
-console.log('New redis setup')
-console.log('process', process.argv[2])
-console.log(process.argv[2] === 'dev' ? '127.0.0.1' : 'main.local')
-console.log('UUID ----->', process.env.UUID || 'dev')
+console.log(' ----->', process.env.UUID || 'dev')
 
 console.log('pubsubProvider', pubsubProvider)
 console.log('cameraProvider', cameraProvider)

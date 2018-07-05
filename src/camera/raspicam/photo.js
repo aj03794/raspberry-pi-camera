@@ -19,7 +19,6 @@ export const takePhoto = ({
 }) => new Promise((resolve, reject) => {
     const location = resolvePath(__dirname, 'pictures')
     const folder = 'pictures'
-    // console.log('LOCATION', location)
     const name = `${timestamp()}.jpg`
     return ensureDirExists({ location })
     .then(({ location }) => {
