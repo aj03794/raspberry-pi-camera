@@ -1,6 +1,7 @@
 import { getSetting } from './settings'
 import { slack as createSlack } from './slack'
 import { manageFolder } from './manage-folder'
+import { q as queueCreator } from './queue'
 
 const pubsubProvider = getSetting('pubsub')
 const cameraProvider = getSetting('camera')
@@ -31,12 +32,14 @@ Promise.all(imports)
     return Promise.all([
         publisherCreator(),
         subscriberCreator(),
-        gcp({ getSetting, uuid })
+        gcp({ getSetting, uuid }),
+        queueCreator()
     ])
     .then(([
         { publish },
         { subscribe },
-        { allGcpMsgs, filterGcpMsgs }
+        { allGcpMsgs, filterGcpMsgs },
+        { enqueue }
     ]) => {
         const slack = createSlack({ publish })
         const gcpFunctions = {
@@ -52,7 +55,8 @@ Promise.all(imports)
             getSetting,
             slack,
             manageFolder,
-            ...gcpFunctions
+            ...gcpFunctions,
+            enqueue
         })
     })
 })
