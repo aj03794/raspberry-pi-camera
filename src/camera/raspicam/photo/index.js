@@ -1,68 +1,83 @@
-import { writeFile, ensureDir } from 'fs-extra'
+import { writeFileSync, ensureDir } from 'fs-extra'
 import { exec } from 'child_process'
 import { resolve as resolvePath } from 'path'
 import dateTime from 'date-time'
 
 import {
-    doFakeManualPhoto as doFakeManualPhotoCreator,
-    doRealManualPhoto as doRealManualPhotoCreator,
-    doRealAutomaticPhoto,
-    doFakeAutomaticPhoto
+    takeManualPhoto as takeManualPhotoCreator
+} from './manual'
+
+import {
+    takeAutomaticPhoto as takeAutomaticPhotoCreator
 } from './automatic'
-import { resolveCname } from 'dns';
 
 const timestamp = () => dateTime({ local: true })
 
 export const takePhoto = ({
     getSetting,
+    slack,
+    manageFolder,
+    publish
+}) => ({
     photoType
-    // uploadFileToSlack = null
 }) => () => new Promise((resolve, reject) => {
 
     const location = resolvePath(__dirname, 'pictures')
     const folder = 'pictures'
     const name = `${timestamp()}.jpg`
 
-    const doFakeManualPhoto = doFakeManualPhotoCreator({
-        location,
-        name,
-        writeFile
-    })
-    const doRealManualPhoto = doRealManualPhotoCreator({
+    const takeManualPhoto = takeManualPhotoCreator({
         location,
         name,
         getSetting,
-        exec
+        exec,
+        writeFileSync
+    })
+
+    const takeAutomaticPhoto = takeAutomaticPhotoCreator({
+        location,
+        name,
+        getSetting,
+        exec,
+        writeFileSync 
     })
     
-    return ensureDirExists({ location })
     ensureDir(location)
     .then(() => {
         if (photoType === 'manual') {
-            if (process.argv[2] === 'dev') {
-                return doFakeManualPhoto()
-                        .then()
-            }
-             return doRealManualPhoto()
+             return takeManualPhoto()
+                    .then(({
+                        file
+                    }) => {
+                        console.log('Fake manual photo taken successfully')
+                        return slack({
+                            slackMsg: {
+                                meta: {
+                                    timestamp: timestamp()
+                                },
+                                msg: 'Photo upload successful - local',
+                                operation: 'FILE_UPLOAD',
+                                file
+                            }
+                        })
+                    })
         }
         else if (photoType === 'automatic') {
-            if (process.argv[2] === 'dev'){
-                return doFakeAutomaticPhoto()
-                        .then(() => {
-                            return slack({
-                                slackMsg: {
-                                    msg: 'Fake Photo taken succesfully',
-                                    timestamp: timestamp()
-                                }
-                            })
+            return takeAutomaticPhoto()
+                    .then(() => {
+                        const msg = 'Photo taken successfully'
+                        console.log('msg', msg)
+                        return slack({
+                            slackMsg: {
+                                msg,
+                                timestamp: timestamp()
+                            }
                         })
-               
-            }
-            return doRealAutomaticPhoto()
+                    })
         }
     })
     .catch(err => {
-      console.log('ensureDir error', err)
+      console.log('Error', err)
     })
     .then(() => {
         publish({

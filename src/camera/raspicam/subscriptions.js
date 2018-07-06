@@ -1,5 +1,6 @@
 export const createSubscriptions = ({
-    subscribe
+    subscribe,
+    filterGcpMsgs
 }) => new Promise((resolve, reject) => {
 
     subscribe({
@@ -11,7 +12,6 @@ export const createSubscriptions = ({
             return false
         })
         const gcpSubscription = filterGcpMsgs(msg => {
-            console.log('Timestamp', timestamp())
             if (
                 msg
                 && msg.data

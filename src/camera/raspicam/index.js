@@ -1,4 +1,4 @@
-import { takePhoto } from './photo'
+import { takePhoto as takePhotoCreator } from './photo'
 import dateTime from 'date-time'
 import { createSubscriptions } from './subscriptions'
 
@@ -7,12 +7,17 @@ const timestamp = () => {
 }
 
 export const raspicam = ({
+    publish,
     subscribe,
     getSetting,
     slack,
     manageFolder,
-    filterGcpMsgs
+    filterGcpMsgs,
+    enqueue
 }) => {
+
+    const takePhoto = takePhotoCreator({ getSetting, slack, manageFolder, publish })
+
     createSubscriptions({
         subscribe,
         filterGcpMsgs
@@ -22,23 +27,10 @@ export const raspicam = ({
         gcpSubscription
     }) => {
         redisSubscription.subscribe(msg => {
-            enqueue(takePhoto)
+            enqueue(takePhoto({ photoType: 'automatic' }))
         })
         gcpSubscription.subscribe(msg => {
-            const uploadFileToSlack = ({ file }) => new Promise((resolve, reject) => {
-                slack({
-                    slackMsg: {
-                        meta: {
-                            timestamp: timestamp()
-                        },
-                        msg: 'Photo upload successful - local',
-                        operation: 'FILE_UPLOAD',
-                        file
-                    }
-                })
-                return resolve()
-            })
-            enqueue(takePhoto)
+            enqueue(takePhoto({ photoType: 'manual' }))
         })
     })
 }
