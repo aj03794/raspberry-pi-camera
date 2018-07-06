@@ -16,7 +16,7 @@ export const takeManualPhoto = ({
         return resolve({ file })
     }
     console.log('Taking real photo')
-    return exec(`raspistill -md 3 ${cameraTimeout} ${previewMode} -o "${name}"`,
+    return exec(`raspistill -md 3 -t ${cameraTimeout} ${previewMode} -o "${name}"`,
         {
             cwd: location
         },
