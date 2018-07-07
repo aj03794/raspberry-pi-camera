@@ -49,7 +49,7 @@ export const takePhoto = ({
                     .then(({
                         file
                     }) => {
-                        console.log('Fake manual photo taken successfully')
+                        console.log('Manual photo taken successfully')
                         return slack({
                             slackMsg: {
                                 meta: {
