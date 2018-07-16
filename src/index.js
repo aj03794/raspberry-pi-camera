@@ -19,6 +19,8 @@ const imports = [
     import(`./pub-sub/gcp`)
 ]
 
+console.log('hello')
+
 Promise.all(imports)
 .then(([
     { [pubsubProvider]: pubsub },
