@@ -1,0 +1,20 @@
+{
+	"pubsub": {
+        "redis": {
+            "type": "mock"
+        },
+        "gcp": {
+            "type": "mock"
+        }
+    },
+    "camera": {
+        "type": "mock",
+        "config": {
+            "preview": false,
+            "timeout": "500"
+        },
+        "folderToPlacePhotos": {
+            "maxNumber": "10"
+        }
+    }
+}
