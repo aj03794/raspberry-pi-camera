@@ -1,5 +1,3 @@
-// import cloud from './cloud/index'
-
 export const takePhoto = ({
     msg,
     getSetting,

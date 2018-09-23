@@ -19,7 +19,7 @@ const {
 const {
     next: newErrMsg,
     subscribe: errMsgSubscription
-}
+} = createSubject()
 
 initializeTakePhotoController({
     pubSubMsgSubscription,
