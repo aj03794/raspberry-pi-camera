@@ -5,3 +5,4 @@ gcp-service-account.json
 temp/
 buckets/
 .DS_STORE
+/photo-dir
