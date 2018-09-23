@@ -1,8 +1,17 @@
 {
-	"pubsub": "redis",
-	"camera": "raspicam",
-	"cameraPreview": false,
-	"cameraTimeout": 500,
-	"ipAddress": "127.0.0.1",
-	"googleApplicationCredentials": "gcp-service-account.json"
+	"pubsub": {
+        "redis": {
+            "type": "real"
+        },
+        "gcp": {
+            "type": "real"
+        }
+    },
+    "camera": {
+        "type": "real",
+        "config": {
+            "preview": "true",
+            "timeout": "500"
+        }
+    }
 }

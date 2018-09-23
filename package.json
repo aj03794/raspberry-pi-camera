@@ -7,7 +7,7 @@
     "build": "rm -rf dist && babel src --out-dir dist --copy-files",
     "start": "npm run build && node dist/index.js",
     "start-dev": "npm run build && node dist/index.js dev",
-    "test": "exit 0",
+    "test": "./node_modules/mocha/bin/_mocha --require babel-core/register --timeout 20000 src/**/*.test.js",
     "version-patch": "node ./scripts/git-commit.js && npm version patch",
     "postversion": "git push"
   },
@@ -16,11 +16,13 @@
   "license": "ISC",
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-loader": "^7.1.4",
+    "babel-loader": "^7.1.5",
     "babel-plugin-dynamic-import-node": "^1.2.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-polyfill": "^6.26.0",
-    "babel-preset-env": "^1.6.1"
+    "babel-preset-env": "^1.6.1",
+    "chai": "^4.1.2",
+    "mocha": "^5.2.0"
   },
   "babel": {
     "presets": [
