@@ -12,9 +12,10 @@
         "config": {
             "preview": false,
             "timeout": "500"
-        },
-        "folderToPlacePhotos": {
-            "maxNumber": "10"
         }
+    },
+    "photoFolder": {
+        "maxNumber": 10,
+        "name": "cooper-cam-photos"
     }
 }

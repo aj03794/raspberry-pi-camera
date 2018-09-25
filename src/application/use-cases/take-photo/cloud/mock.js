@@ -1,5 +1,4 @@
 import { cwd } from 'process'
-
 // ensure folder for pictures exists
 // take picture
 // save picture
@@ -7,21 +6,18 @@ import { cwd } from 'process'
 
 export const mock = ({
     ensureDirectoryExists,
-    resolvePath
+    photo,
+    photoDir,
+    raspicam
 }) => {
-
-    const photoDir = resolvePath(cwd(), 'photo-dir')
-    console.log('photoDir', photoDir)
 
     return ensureDirectoryExists(photoDir)
             .then(() => {
-                console.log('Created!')
-                return
-            })
-            .then(() => {
-                
+                raspicam({ photo })
             })
             .catch(err => {
-                console.error('ASDASDADSSD')
+                console.error({
+                    err
+                })
             })
 }

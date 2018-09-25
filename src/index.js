@@ -3,6 +3,7 @@ import { createSubject } from './infrastructure/utils/rx'
 import { initializeTakePhotoController } from './interfaces/index'
 import { getSetting } from './infrastructure/settings'
 import { queue } from './infrastructure/queue'
+import { createPhotoPath } from './infrastructure/utils/photo-name'
 
 const {
     next: newPubSubMsg,
@@ -17,7 +18,7 @@ const {
 } = createSubject()
 
 const {
-    next: newErrMsg,
+    next: newErrorMsg,
     subscribe: errMsgSubscription
 } = createSubject()
 
@@ -26,11 +27,16 @@ initializeTakePhotoController({
     pubSubMsgFilter,
     queue,
     getSetting,
-    newErrorMsg
+    newErrorMsg,
+    createPhotoPath
 })
 .then(() => {
     initializePubSubProviders({
         getSetting,
         newPubSubMsg
     })
+    // newPubSubMsg({
+    //     command: 'take-photo',
+    //     from: 'cloud'
+    // })
 })

@@ -1,4 +1,5 @@
 import { ensureDirectoryExists, manageFolder } from '../infrastructure/utils/fs'
+import { raspicam } from '../infrastructure/camera'
 import { resolve as resolvePath } from 'path'
 
 export const initializeTakePhotoController = ({
@@ -6,7 +7,8 @@ export const initializeTakePhotoController = ({
     pubSubMsgFilter,
     queue,
     getSetting,
-    newErrorMsg
+    newErrorMsg,
+    createPhotoPath
 }) => {
 
     const q = queue((msg, cb) => {
@@ -31,7 +33,9 @@ export const initializeTakePhotoController = ({
                     msg,
                     getSetting,
                     ensureDirectoryExists,
-                    resolvePath
+                    resolvePath,
+                    raspicam,
+                    createPhotoPath
                 })
                     .catch(err => {
                         newErrorMsg({

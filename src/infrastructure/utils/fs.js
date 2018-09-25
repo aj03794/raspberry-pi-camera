@@ -1,9 +1,9 @@
-import { readdir as readDir, existsSync, remove, ensureDir } from 'fs-extra'
+import { readdir as readDir, existsSync, remove, ensureDir, writeFileSync } from 'fs-extra'
 import { resolve as resolvePath } from 'path'
 
-export const ensureDirectoryExists = ensureDir
+const ensureDirectoryExists = ensureDir
 
-export const manageFolder = ({ location, maxFiles }) => new Promise((resolve, reject) => {
+const manageFolder = ({ location, maxFiles }) => new Promise((resolve, reject) => {
 	if (existsSync(location)) {
 		return readFolder({ location, maxFiles })
 		.then(deleteFiles)
@@ -39,3 +39,9 @@ const readFolder = ({ location, maxFiles }) => new Promise((resolve, reject) => 
 		return resolve({ files, location, maxFiles })
 	})
 })
+
+export {
+	manageFolder,
+	writeFileSync,
+	ensureDirectoryExists
+}

@@ -2,6 +2,7 @@ import { assert } from 'chai'
 
 import { cwd } from 'process'
 import { resolve as resolvePath } from 'path'
+import { homedir } from 'os'
 
 import { queue } from './infrastructure/queue'
 import { initializePubSubProviders } from './infrastructure/pubsub'
@@ -11,7 +12,8 @@ import { getSetting } from './infrastructure/settings'
 import { initializeTakePhotoController } from './interfaces/index'
 import { takePhoto } from './application/use-cases/take-photo'
 import { ensureDirectoryExists, manageFolder } from './infrastructure/utils/fs'
-
+import { raspicam } from './infrastructure/camera'
+import { createPhotoPath } from './infrastructure/utils/photo-name'
 
 let newPubSubMsg,
     pubSubMsgSubscription,
@@ -118,10 +120,12 @@ describe('tests', () => {
             msg,
             getSetting,
             ensureDirectoryExists,
-            resolvePath
+            resolvePath,
+            raspicam,
+            createPhotoPath
         })
         .then(() => {
-            assert.exists(resolvePath(cwd(), 'project-dir'))
+            assert.exists(resolvePath(homedir(), 'cooper-cam-photos'))
             done()
         })
     })

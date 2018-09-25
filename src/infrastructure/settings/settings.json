@@ -10,8 +10,12 @@
     "camera": {
         "type": "real",
         "config": {
-            "preview": "true",
+            "preview": false,
             "timeout": "500"
         }
+    },
+    "photoFolder": {
+        "maxNumber": 10,
+        "name": "cooper-cam-photos"
     }
 }
