@@ -1,7 +1,11 @@
-import { real } from './real'
-import { mock } from './mock'
+// take picture
+// save picture
+// Send notification to slack
 
-export {
-    real,
-    mock
+export const execute = ({
+    raspicam
+}) => {
+
+    return raspicam()
+
 }

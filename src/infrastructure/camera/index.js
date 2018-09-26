@@ -2,9 +2,7 @@ import { writeFileSync } from '../utils/fs'
 import { exec } from 'child_process'
 import { getSetting } from '../settings'
 
-export const raspicam = ({
-    photo
-}) => {
+export const raspicam = () => {
 
     const {
         type,
@@ -17,13 +15,9 @@ export const raspicam = ({
 
     return import(`./${type}`)
         .then(({
-            [type]: raspistill
+            execute
         }) => {
-            console.log('--------')
-            console.log('raspistill', raspistill)
-            raspistill({
-                writeFileSync,
-                photo,
+            return execute({
                 config,
                 exec
             })

@@ -31,11 +31,7 @@ export const initializeTakePhotoController = ({
             }) => {
                 takePhoto({
                     msg,
-                    getSetting,
-                    ensureDirectoryExists,
-                    resolvePath,
-                    raspicam,
-                    createPhotoPath
+                    raspicam
                 })
                     .catch(err => {
                         newErrorMsg({

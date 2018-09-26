@@ -14,8 +14,13 @@
             "timeout": "500"
         }
     },
-    "photoFolder": {
-        "maxNumber": 10,
-        "name": "cooper-cam-photos"
+    "storage": {
+        "local": {
+            "use": true,
+            "config": {
+                "name": "cooper-cam-photos",
+                "maxNumber": 10
+            }
+        }
     }
 }

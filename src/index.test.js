@@ -3,6 +3,7 @@ import { assert } from 'chai'
 import { cwd } from 'process'
 import { resolve as resolvePath } from 'path'
 import { homedir } from 'os'
+import { removeSync } from 'fs-extra'
 
 import { queue } from './infrastructure/queue'
 import { initializePubSubProviders } from './infrastructure/pubsub'
@@ -109,7 +110,7 @@ describe('tests', () => {
         })
     })
 
-    it.only('should create photo-dir at root of project', done => {
+    it.only('should create dir homedir of os for photos to be stored', done => {
 
         const msg = {
             command: 'take-photo',
@@ -118,14 +119,16 @@ describe('tests', () => {
 
         takePhoto({
             msg,
-            getSetting,
-            ensureDirectoryExists,
-            resolvePath,
-            raspicam,
-            createPhotoPath
+            raspicam
         })
         .then(() => {
-            assert.exists(resolvePath(homedir(), 'cooper-cam-photos'))
+            const dir = resolvePath(homedir(), 'cooper-cam-photos')
+            console.log({
+                dir
+            })
+            assert.exists(dir)
+            // Clean up
+            // removeSync(dir)
             done()
         })
     })
