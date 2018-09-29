@@ -7,19 +7,24 @@ export const real = ({
   newPubSubMsg,
 }) => {
 
-  const gcpCreds = getSetting('pubsub').gcp.googleApplicationCredentials
-//   const subscriptionName = `projects/smart-home-monitoring-system/subscriptions/take-photo-${uuid}`
-    const subscriptionName = `projects/smart-home-monitoring-system/subscriptions/take-photo-000000005234dd73`
-  const keyFilename = resolvePath(homedir(), 'gcp-creds', gcpCreds)
-	const pubsub = new PubSub({
-		keyFilename
-  })
-  const subscription = pubsub.subscription(subscriptionName)
+    const {
+        googleApplicationCredentials: gcpCreds,
+        baseSubscription
+    } = getSetting('pubsub').gcp
 
-  const messageHandler = message => {
+    const subscriptionName = `${baseSubscription}-${process.env.UUID}`
+    console.log({
+        subscriptionName
+    })
+    const keyFilename = resolvePath(homedir(), 'gcp-creds', gcpCreds)
+    const pubsub = new PubSub({ keyFilename })
+    const subscription = pubsub.subscription(subscriptionName)
+
+    const messageHandler = message => {
+
     newPubSubMsg({
         command: 'take-photo',
-        from: 'cloud'
+        from: 'cloud'   
     })
     message.ack()
   }
