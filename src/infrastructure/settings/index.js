@@ -9,6 +9,9 @@ export const getSetting = (settingToRetrieve) => {
   if (process.argv[2] === 'dev') {
     fileName = `settings.dev.json`
   }
+  if (process.argv[2] === 'test') {
+    fileName = `settings.test.json`
+  }
   console.log('fileName', fileName)
   try {
     setting = JSON.parse(fs.readFileSync(resolvePath(__dirname, fileName)))[settingToRetrieve]

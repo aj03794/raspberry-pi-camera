@@ -10,7 +10,7 @@ export const initializeTakePhotoController = ({
     getSetting,
     newErrorMsg,
     createPhotoPath,
-    uploadPhotoToSlack
+    uploadPhoto
 }) => {
 
     const q = queue((msg, cb) => {
@@ -35,7 +35,7 @@ export const initializeTakePhotoController = ({
                     msg,
                     raspicam,
                     savePhoto,
-                    uploadPhotoToSlack
+                    uploadPhoto
                 })
                     .catch(err => {
                         newErrorMsg({

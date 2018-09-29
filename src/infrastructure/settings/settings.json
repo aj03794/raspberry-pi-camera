@@ -23,6 +23,10 @@
                 "name": "cooper-cam-photos",
                 "maxNumber": 10
             }
+        },
+        "slack": {
+            "type": "real",
+            "channels": ["general"]
         }
     }
 }

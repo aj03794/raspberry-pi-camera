@@ -4,7 +4,7 @@
             "type": "mock"
         },
         "gcp": {
-            "type": "real",
+            "type": "mock",
             "googleApplicationCredentials": "gcp-service-account.json",
             "baseSubscription": "projects/smart-home-monitoring-system/subscriptions/take-photo"
         }
@@ -23,6 +23,10 @@
                 "name": "cooper-cam-photos",
                 "maxNumber": 10
             }
+        },
+        "slack": {
+            "type": "real",
+            "channels": "general"
         }
     }
 }

@@ -6,7 +6,8 @@ import { resolve as resolvePath } from 'path'
 import { ensureDirectoryExists, writeFileSync, manageFolder } from '../utils/fs'
 import { createPhotoPath } from '../utils/photo-name'
 
-import { execute } from './local'
+import { execute as savePhotoLocally } from './local'
+import { execute as uploadPhotoToSlack } from './slack'
 
 export const savePhoto = ({
     photoAsBuffer
@@ -22,30 +23,40 @@ export const savePhoto = ({
         }
     } = getSetting('storage')
 
-    console.log({
-        name,
-        maxNumber
-    })
-
     const photoDir = resolvePath(homedir(), name)
-
-    console.log({
-        photoDir
-    })
 
     ensureDirectoryExists(photoDir)
     const locationToSavePhoto = createPhotoPath({ photoDir })
-    console.log('locationToSavePhoto', locationToSavePhoto)
-    return execute({ writeFileSync, locationToSavePhoto, photoAsBuffer })
+    return savePhotoLocally({ writeFileSync, locationToSavePhoto, photoAsBuffer })
             .then(() => {
                 manageFolder({
                     location: photoDir,
                     maxFiles: maxNumber
                 })
-                // return locationToSavePhoto
             })
             .then(() => {
-                return locationToSavePhoto
+                return {
+                    savedPhotoLocation: locationToSavePhoto
+                }
             })
+
+}
+
+export const uploadPhoto = ({
+    savedPhotoLocation
+}) => {
+    const {
+        slack: {
+            type,
+            channels
+        },
+    } = getSetting('storage')
+
+    console.log({
+        channels,
+        savedPhotoLocation
+    })
+
+    return uploadPhotoToSlack({ savedPhotoLocation, channels })
 
 }

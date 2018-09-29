@@ -4,7 +4,7 @@ import { initializeTakePhotoController } from './interfaces/index'
 import { getSetting } from './infrastructure/settings'
 import { queue } from './infrastructure/queue'
 import { createPhotoPath } from './infrastructure/utils/photo-name'
-import { slackClient } from './infrastructure/slack'
+import { uploadPhoto } from './infrastructure/storage'
 
 const {
     next: newPubSubMsg,
@@ -23,8 +23,6 @@ const {
     subscribe: errMsgSubscription
 } = createSubject()
 
-const { uploadPhotoToSlack } = slackClient()
-
 initializeTakePhotoController({
     pubSubMsgSubscription,
     pubSubMsgFilter,
@@ -32,15 +30,11 @@ initializeTakePhotoController({
     getSetting,
     newErrorMsg,
     createPhotoPath,
-    uploadPhotoToSlack
+    uploadPhoto
 })
 .then(() => {
     initializePubSubProviders({
         getSetting,
         newPubSubMsg
     })
-    // newPubSubMsg({
-    //     command: 'take-photo',
-    //     from: 'cloud'
-    // })
 })

@@ -5,19 +5,24 @@
 export const execute = ({
     raspicam,
     savePhoto,
-    uploadPhotoToSlack
+    uploadPhoto
 }) => {
-
-    console.log({
-        savePhoto,
-        uploadPhotoToSlack: uploadPhotoToSlack.toString()
-    })
 
     return raspicam()
             .then(savePhoto)
-            .then(uploadPhotoToSlack)
-            .then(() => {
-                console.log('hello')
+            .then(result => {
+                console.log({
+                    result
+                })
+                return result
+            })
+            .then(uploadPhoto)
+            .then(() => console.log('FINISHED'))
+            .catch(err => {
+                console.error({
+                    msg: `take-photo cloud use case failed`,
+                    err
+                })
             })
 
 }
