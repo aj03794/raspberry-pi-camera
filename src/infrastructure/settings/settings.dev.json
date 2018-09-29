@@ -4,7 +4,8 @@
             "type": "mock"
         },
         "gcp": {
-            "type": "mock"
+            "type": "real",
+            "googleApplicationCredentials": "gcp-service-account.json"
         }
     },
     "camera": {

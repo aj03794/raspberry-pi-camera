@@ -4,7 +4,8 @@
             "type": "real"
         },
         "gcp": {
-            "type": "real"
+            "type": "real",
+            "googleApplicationCredentials": "gcp-service-account.json"
         }
     },
     "camera": {

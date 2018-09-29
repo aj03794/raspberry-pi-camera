@@ -9,6 +9,7 @@ export const initializePubSubProviders = ({
             [type]: pubSub
         }) => {
             pubSub({
+                getSetting,
                 newPubSubMsg
             })
         })

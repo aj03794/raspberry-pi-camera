@@ -5,20 +5,12 @@ export const execute = ({
     config,
     exec
 }) => {
-
-
     const photo = resolvePath(__dirname, 'large-photo.jpg')
-
+    const photoAsBuffer = readFileSync(photo)
     console.log({
-        photo
+        photoAsBuffer
     })
-
-    const photoBuffer = readFileSync(photo)
-    console.log({
-        photoBuffer
-    })
-    // return Promise.resolve({ photo })
     return Promise.resolve({
-        photoBuffer
+        photoAsBuffer
     })
 }

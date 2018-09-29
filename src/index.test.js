@@ -3,7 +3,7 @@ import { assert } from 'chai'
 import { cwd } from 'process'
 import { resolve as resolvePath } from 'path'
 import { homedir } from 'os'
-import { removeSync } from 'fs-extra'
+import { removeSync, existsSync, readdirSync } from 'fs-extra'
 
 import { queue } from './infrastructure/queue'
 import { initializePubSubProviders } from './infrastructure/pubsub'
@@ -14,7 +14,11 @@ import { initializeTakePhotoController } from './interfaces/index'
 import { takePhoto } from './application/use-cases/take-photo'
 import { ensureDirectoryExists, manageFolder } from './infrastructure/utils/fs'
 import { raspicam } from './infrastructure/camera'
-import { createPhotoPath } from './infrastructure/utils/photo-name'
+import { createPhotoPath as realCreatePhotoPath } from './infrastructure/utils/photo-name'
+import { savePhoto } from './infrastructure/storage'
+import { slackClient } from './infrastructure/slack'
+
+const { uploadPhotoToSlack } = slackClient()
 
 let newPubSubMsg,
     pubSubMsgSubscription,
@@ -110,26 +114,103 @@ describe('tests', () => {
         })
     })
 
-    it.only('should create dir homedir of os for photos to be stored', done => {
+    it('should create dir for photos to be stored and save photo', done => {
+
+        const msg = {
+            command: 'take-photo',
+            from: 'cloud'
+        }
+       
+        takePhoto({
+            msg,
+            raspicam,
+            savePhoto
+        })
+        .then(() => {
+            const dir = resolvePath(homedir(), 'cooper-cam-photos')
+            assert.equal(true, existsSync(dir))
+            assert.equal(readdirSync(dir).length, 1)
+            removeSync(dir)
+            done()
+        })
+    })
+
+    it('should only keep a max number of 10 photos', done => {
 
         const msg = {
             command: 'take-photo',
             from: 'cloud'
         }
 
-        takePhoto({
-            msg,
-            raspicam
+        const dir = resolvePath(homedir(), 'cooper-cam-photos')
+
+        initializeTakePhotoController({
+            pubSubMsgSubscription,
+            queue,
+            pubSubMsgFilter,
+            getSetting,
+            newErrorMsg
         })
         .then(() => {
-            const dir = resolvePath(homedir(), 'cooper-cam-photos')
-            console.log({
-                dir
-            })
-            assert.exists(dir)
-            // Clean up
-            // removeSync(dir)
-            done()
+
+                let called = 0
+
+                const z = setInterval(() => {
+                    console.log('called', called)
+                    called++
+                    newPubSubMsg({
+                        command: 'take-photo',
+                        from: 'cloud'
+                    })
+                    if (called === 11) {
+                        clearInterval(z)
+                        const length = readdirSync(dir).length
+                        console.log('LENGTH', length)
+                        assert.equal(length, 10)
+                        removeSync(dir)
+                        done()
+                    }
+                }, 100)
+        })
+    })
+
+    it.only('should post picture to slack', done => {
+
+        const msg = {
+            command: 'take-photo',
+            from: 'cloud'
+        }
+
+        const dir = resolvePath(homedir(), 'cooper-cam-photos')
+
+        initializeTakePhotoController({
+            pubSubMsgSubscription,
+            queue,
+            pubSubMsgFilter,
+            getSetting,
+            newErrorMsg,
+            uploadPhotoToSlack
+        })
+        .then(() => {
+
+                let called = 0
+
+                const z = setInterval(() => {
+                    console.log('called', called)
+                    called++
+                    newPubSubMsg({
+                        command: 'take-photo',
+                        from: 'cloud'
+                    })
+                    if (called === 1) {
+                        clearInterval(z)
+                        const length = readdirSync(dir).length
+                        console.log('LENGTH', length)
+                        assert.equal(length, 1)
+                        removeSync(dir)
+                        done()
+                    }
+                }, 100)
         })
     })
 

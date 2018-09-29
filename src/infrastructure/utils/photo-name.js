@@ -1,7 +1,7 @@
 import dateTime from 'date-time'
 
 const timestamp = () => {
-    return dateTime({ local: true })
+    return dateTime({ local: true, showMilliseconds: true })
 }
 
 export const createPhotoPath = ({

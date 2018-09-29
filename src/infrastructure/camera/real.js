@@ -16,13 +16,15 @@ export const execute = ({
     // --output,    -o        Output filename <filename>
     // Specifies the output filename. If not specified, no file is saved.
     // If the filename is '-', then all output is sent to stdout.
-    return exec(`raspistill -md 3 -t ${cameraTimeout} ${previewMode} -o "${photo}"`,
+    return exec(`raspistill -md 3 -t ${cameraTimeout} ${previewMode} -o`,
         (err, stdout, stderr) => {
             if (err) {
                 return reject({ msg: 'Picture could not be taken', err })
             }
             console.log('Raspistill: ', stdout)
-            return resolve()
+            return resolve({
+                photoAsBuffer: stdout
+            })
         }
     )
 

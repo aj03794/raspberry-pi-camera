@@ -3,19 +3,49 @@
 import { getSetting } from '../settings'
 import { homedir } from 'os'
 import { resolve as resolvePath } from 'path'
+import { ensureDirectoryExists, writeFileSync, manageFolder } from '../utils/fs'
+import { createPhotoPath } from '../utils/photo-name'
+
+import { execute } from './local'
 
 export const savePhoto = ({
-    photoBuffer
+    photoAsBuffer
 }) => {
 
-    const storage = getSetting('storage')
+    const {
+        local: {
+            use,
+            config: {
+                name,
+                maxNumber
+            }
+        }
+    } = getSetting('storage')
 
-    const photoDir = resolvePath(homedir(), getSetting('photoFolder').name)
+    console.log({
+        name,
+        maxNumber
+    })
 
-    // Name is a little confusing
-    // This is the fully qualified path (dir + file name) where photo will be placed
-    const photo = createPhotoPath({ photoDir })
-    console.log('photo', photo)
+    const photoDir = resolvePath(homedir(), name)
 
+    console.log({
+        photoDir
+    })
+
+    ensureDirectoryExists(photoDir)
+    const locationToSavePhoto = createPhotoPath({ photoDir })
+    console.log('locationToSavePhoto', locationToSavePhoto)
+    return execute({ writeFileSync, locationToSavePhoto, photoAsBuffer })
+            .then(() => {
+                manageFolder({
+                    location: photoDir,
+                    maxFiles: maxNumber
+                })
+                // return locationToSavePhoto
+            })
+            .then(() => {
+                return locationToSavePhoto
+            })
 
 }
