@@ -9,9 +9,10 @@ export const execute = ({
 
     const previewMode = preview === true ? `p` : `-n`
     const cameraTimeout = timeout || `500`
+
     console.log('previewMode', previewMode)
     console.log('cameraTimeout', cameraTimeout)
-    console.log('Taking real automatic photo')
+    console.log('Taking real ')
 
     // --output,    -o        Output filename <filename>
     // Specifies the output filename. If not specified, no file is saved.
@@ -20,6 +21,11 @@ export const execute = ({
         (err, stdout, stderr) => {
             if (err) {
                 return reject({ msg: 'Picture could not be taken', err })
+            }
+            if (stderr) {
+                console.log({
+                    stderr
+                })
             }
             console.log('Raspistill: ', stdout)
             return resolve({
