@@ -6,6 +6,11 @@ export const execute = ({
     writeFileSync
 }) => new Promise((resolve, reject) => {
 
+    console.log({
+        photoAsBufferInSavePhoto: photoAsBuffer,
+        locationToSavePhoto
+    })
+
     writeFileSync(locationToSavePhoto, photoAsBuffer, {
         encoding: 'UTF-8'
     })
