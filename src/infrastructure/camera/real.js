@@ -1,6 +1,6 @@
 export const execute = ({
     photo,
-    exec,
+    execSync,
     config: {
         preview,
         timeout
@@ -17,21 +17,23 @@ export const execute = ({
     // --output,    -o        Output filename <filename>
     // Specifies the output filename. If not specified, no file is saved.
     // If the filename is '-', then all output is sent to stdout.
-    return exec(`raspistill -md 3 -t ${cameraTimeout} ${previewMode} -o`,
-        (err, stdout, stderr) => {
-            if (err) {
-                return reject({ msg: 'Picture could not be taken', err })
-            }
-            if (stderr) {
-                console.log({
-                    stderr
-                })
-            }
-            console.log('Raspistill: ', stdout)
-            return resolve({
-                photoAsBuffer: stdout
-            })
-        }
-    )
+
+    try {
+        const photoAsBuffer = execSync(`raspistill -md 3 -t ${cameraTimeout} ${previewMode} -o`)
+        console.log({
+            photoAsBuffer
+        })
+        return resolve({
+            photoAsBuffer
+        })
+    }
+    catch (e) {
+        console.log({
+            msg: `Error taking photo`,
+            err: e
+        })
+        reject(e)
+    }
+    
 
 })

@@ -1,5 +1,5 @@
 import { writeFileSync } from '../utils/fs'
-import { exec } from 'child_process'
+import { execSync } from 'child_process'
 import { getSetting } from '../settings'
 
 export const raspicam = () => {
@@ -19,7 +19,7 @@ export const raspicam = () => {
         }) => {
             return execute({
                 config,
-                exec
+                execSync
             })
         })
 

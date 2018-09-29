@@ -3,7 +3,7 @@ import { resolve as resolvePath } from 'path'
 
 export const execute = ({
     config,
-    exec
+    execSync
 }) => {
     const photo = resolvePath(__dirname, 'large-photo.jpg')
     const photoAsBuffer = readFileSync(photo)
