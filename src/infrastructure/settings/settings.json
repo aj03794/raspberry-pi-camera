@@ -6,7 +6,7 @@
         "gcp": {
             "type": "real",
             "googleApplicationCredentials": "gcp-service-account.json",
-            "baseSubscription": "projects/smart-home-monitoring-system/subscriptions/take-photos"
+            "baseSubscription": "projects/smart-home-monitoring-system/subscriptions/take-photo"
         }
     },
     "camera": {
