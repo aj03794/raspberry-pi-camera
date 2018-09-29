@@ -13,12 +13,8 @@ import { getSetting } from './infrastructure/settings'
 import { initializeTakePhotoController } from './interfaces/index'
 import { takePhoto } from './application/use-cases/take-photo'
 import { ensureDirectoryExists, manageFolder } from './infrastructure/utils/fs'
-import { raspicam } from './infrastructure/camera'
-import { createPhotoPath as realCreatePhotoPath } from './infrastructure/utils/photo-name'
-import { savePhoto } from './infrastructure/storage'
-import { slackClient } from './infrastructure/slack'
-
-const { uploadPhotoToSlack } = slackClient()
+import { raspicam as realRaspicam } from './infrastructure/camera'
+import { savePhoto as realSavePhoto, uploadPhoto as realUploadPhoto } from './infrastructure/storage'
 
 let newPubSubMsg,
     pubSubMsgSubscription,
@@ -27,6 +23,24 @@ let newPubSubMsg,
     errorMsgSubscription
 
 process.argv[2] = 'dev'
+
+const doInitializeTakePhotoController = ({
+    raspicam = realRaspicam,
+    savePhoto = realSavePhoto,
+    uploadPhoto = realUploadPhoto
+}) => {
+
+    return initializeTakePhotoController({
+        pubSubMsgSubscription,
+        queue,
+        pubSubMsgFilter,
+        getSetting,
+        newErrorMsg,
+        raspicam,
+        savePhoto,
+        uploadPhoto
+    })
+}
 
 describe('tests', () => {
 
@@ -44,14 +58,20 @@ describe('tests', () => {
 
     })
 
-    it('should execute incoming message', done => {
+    it.only('should execute incoming message', done => {
 
-        initializeTakePhotoController({
-            pubSubMsgSubscription,
-            queue,
-            pubSubMsgFilter,
-            getSetting,
-            newErrorMsg
+        let raspicamCalled = 0
+        let savePhotoCalled = 0
+        let uploadPhotoCalled = 0
+
+        const raspicam = () => Promise.resolve(++raspicamCalled)
+        const savePhoto = () => Promise.resolve(++savePhotoCalled)
+        const uploadPhoto = () => Promise.resolve(++savePhotoCalled)
+
+        doInitializeTakePhotoController({
+            raspicam,
+            savePhoto,
+            uploadPhoto
         })
         .then(() => {
                 newPubSubMsg({
@@ -63,6 +83,38 @@ describe('tests', () => {
             done()
         })
     })
+
+    it.only('take-photo/cloud use case should call raspicam, savePhoto, and uploadPhoto', done => {
+
+        let raspicamCalled = 0, savePhotoCalled = 0, uploadPhotoCalled = 0
+        // let raspicamCalled = 0
+        // let savePhotoCalled = 0
+        // let uploadPhotoCalled = 0
+
+        const msg = {
+            command: 'take-photo',
+            from: 'cloud'
+        }
+
+        const raspicam = () => Promise.resolve(++raspicamCalled)
+        const savePhoto = () => Promise.resolve(++savePhotoCalled)
+        const uploadPhoto = () => Promise.resolve(++uploadPhotoCalled)
+
+        takePhoto({
+            msg,
+            raspicam,
+            savePhoto,
+            uploadPhoto
+        })
+        .then(() => {
+            console.log('finished')
+            assert.equal(raspicamCalled, 1)
+            assert.equal(uploadPhotoCalled, 1)
+            assert.equal(savePhotoCalled, 1)
+            done()
+        })
+
+    }) 
 
     it('should give error because command is not found', done => {
 
@@ -149,7 +201,8 @@ describe('tests', () => {
             queue,
             pubSubMsgFilter,
             getSetting,
-            newErrorMsg
+            newErrorMsg,
+            uploadPhoto: () => Promise.resolve()
         })
         .then(() => {
 
@@ -174,7 +227,7 @@ describe('tests', () => {
         })
     })
 
-    it.only('should post picture to slack', done => {
+    it('should post picture to slack', done => {
 
         const msg = {
             command: 'take-photo',
@@ -189,7 +242,7 @@ describe('tests', () => {
             pubSubMsgFilter,
             getSetting,
             newErrorMsg,
-            uploadPhotoToSlack
+            uploadPhoto: () => Promise.resolve()
         })
         .then(() => {
 
