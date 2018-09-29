@@ -1,5 +1,4 @@
 export const execute = ({
-    photo,
     execSync,
     config: {
         preview,
@@ -19,7 +18,7 @@ export const execute = ({
     // If the filename is '-', then all output is sent to stdout.
 
     try {
-        const photoAsBuffer = execSync(`raspistill -md 3 -t ${cameraTimeout} ${previewMode} -o`)
+        const photoAsBuffer = execSync(`raspistill -md 3 -t ${cameraTimeout} ${previewMode} -o -`)
         console.log({
             photoAsBuffer
         })
