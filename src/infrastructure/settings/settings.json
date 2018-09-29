@@ -1,0 +1,28 @@
+{
+	"pubsub": {
+        "redis": {
+            "type": "real"
+        },
+        "gcp": {
+            "type": "real",
+            "googleApplicationCredentials": "gcp-service-account.json",
+            "baseSubscription": "projects/smart-home-monitoring-system/subscriptions/take-photo"
+        }
+    },
+    "camera": {
+        "type": "real",
+        "config": {
+            "preview": false,
+            "timeout": "500"
+        }
+    },
+    "storage": {
+        "local": {
+            "use": true,
+            "config": {
+                "name": "cooper-cam-photos",
+                "maxNumber": 10
+            }
+        }
+    }
+}

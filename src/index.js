@@ -1,64 +1,46 @@
-import { getSetting } from './settings'
-import { slack as createSlack } from './slack'
-import { manageFolder } from './manage-folder'
-import { q as queueCreator } from './queue'
+import { initializePubSubProviders } from './infrastructure/pubsub'
+import { createSubject } from './infrastructure/utils/rx'
+import { initializeTakePhotoController } from './interfaces/index'
+import { getSetting } from './infrastructure/settings'
+import { queue } from './infrastructure/queue'
+import { createPhotoPath } from './infrastructure/utils/photo-name'
+import { slackClient } from './infrastructure/slack'
 
-const pubsubProvider = getSetting('pubsub')
-const cameraProvider = getSetting('camera')
+const {
+    next: newPubSubMsg,
+    subscribe: pubSubMsgSubscription,
+    filter: pubSubMsgFilter
+} = createSubject()
 
-console.log(' ----->', process.env.UUID || 'dev')
+const {
+    next: newSlackMsg,
+    subscribe: slackMsgSubscription,
+    filter: slackMsgFilter
+} = createSubject()
 
-console.log('pubsubProvider', pubsubProvider)
-console.log('cameraProvider', cameraProvider)
+const {
+    next: newErrorMsg,
+    subscribe: errMsgSubscription
+} = createSubject()
 
-const uuid = process.env.UUID || 'dev'
+const { uploadPhotoToSlack } = slackClient()
 
-const imports = [
-    import('./pub-sub'),
-    import(`./camera`),
-    import(`./pub-sub/gcp`)
-]
-
-console.log('hello')
-
-Promise.all(imports)
-.then(([
-    { [pubsubProvider]: pubsub },
-    { [cameraProvider]: camera },
-    { gcp }
-]) => {
-
-    const { publisherCreator, subscriberCreator } = pubsub({
-        host: process.argv[2] === 'dev' ? '127.0.0.1' : 'main.local'
+initializeTakePhotoController({
+    pubSubMsgSubscription,
+    pubSubMsgFilter,
+    queue,
+    getSetting,
+    newErrorMsg,
+    createPhotoPath,
+    uploadPhotoToSlack
+})
+.then(() => {
+    initializePubSubProviders({
+        getSetting,
+        newPubSubMsg
     })
-    return Promise.all([
-        publisherCreator(),
-        subscriberCreator(),
-        gcp({ getSetting, uuid }),
-        queueCreator()
-    ])
-    .then(([
-        { publish },
-        { subscribe },
-        { allGcpMsgs, filterGcpMsgs },
-        { enqueue }
-    ]) => {
-        const slack = createSlack({ publish })
-        const gcpFunctions = {
-            allGcpMsgs,
-            filterGcpMsgs,
-        }
-        const pubsubFunctions = {
-            publish,
-            subscribe
-        }
-        return camera({
-            ...pubsubFunctions,
-            getSetting,
-            slack,
-            manageFolder,
-            ...gcpFunctions,
-            enqueue
-        })
-    })
+    // newPubSubMsg({
+    //     command: 'take-photo',
+    //     from: 'cloud'
+    // })
 })

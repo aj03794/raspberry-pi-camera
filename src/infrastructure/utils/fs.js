@@ -1,7 +1,9 @@
-import { readdir as readDir, existsSync, remove } from 'fs-extra'
+import { readdir as readDir, existsSync, remove, ensureDir, writeFileSync } from 'fs-extra'
 import { resolve as resolvePath } from 'path'
 
-export const manageFolder = ({ location, maxFiles }) => new Promise((resolve, reject) => {
+const ensureDirectoryExists = ensureDir
+
+const manageFolder = ({ location, maxFiles }) => new Promise((resolve, reject) => {
 	if (existsSync(location)) {
 		return readFolder({ location, maxFiles })
 		.then(deleteFiles)
@@ -12,7 +14,7 @@ export const manageFolder = ({ location, maxFiles }) => new Promise((resolve, re
 	return resolve()
 })
 
-export const deleteFiles = ({ files, location, maxFiles }) => new Promise((resolve, reject) => {
+const deleteFiles = ({ files, location, maxFiles }) => new Promise((resolve, reject) => {
 	if (files.length > maxFiles) {
 		console.log('Deleting oldest photo', files[0])
 		const filePath = resolvePath(location, files[0])
@@ -27,7 +29,7 @@ export const deleteFiles = ({ files, location, maxFiles }) => new Promise((resol
 	return resolve()
 })
 
-export const readFolder = ({ location, maxFiles }) => new Promise((resolve, reject) => {
+const readFolder = ({ location, maxFiles }) => new Promise((resolve, reject) => {
 	return readDir(location, (err, files) => {
 		if (err) {
 			console.log('Err reading dir', err)
@@ -37,3 +39,9 @@ export const readFolder = ({ location, maxFiles }) => new Promise((resolve, reje
 		return resolve({ files, location, maxFiles })
 	})
 })
+
+export {
+	manageFolder,
+	writeFileSync,
+	ensureDirectoryExists
+}
