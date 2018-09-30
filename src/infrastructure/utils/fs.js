@@ -35,7 +35,6 @@ const readFolder = ({ location, maxFiles }) => new Promise((resolve, reject) => 
 			console.log('Err reading dir', err)
 			reject({ msg: 'Error - reading folder', err })
 		}
-		console.log('files', files)
 		return resolve({ files, location, maxFiles })
 	})
 })

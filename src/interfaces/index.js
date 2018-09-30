@@ -31,14 +31,14 @@ export const initializeTakePhotoController = ({
                     savePhoto,
                     uploadPhoto
                 })
-                // .catch(err => {
-                //     newErrorMsg({
-                //         messageType: 'FATAL',
-                //         data: {
-                //             err
-                //         }
-                //     })
-                // })
+                .catch(err => {
+                    newErrorMsg({
+                        messageType: 'FATAL',
+                        data: {
+                            err
+                        }
+                    })
+                })
             })
             .catch(err => {
                 const msg = {
