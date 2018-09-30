@@ -1,16 +1,10 @@
-import { ensureDirectoryExists, manageFolder } from '../infrastructure/utils/fs'
-import { raspicam } from '../infrastructure/camera'
-import { savePhoto } from '../infrastructure/storage'
-import { resolve as resolvePath } from 'path'
-
 export const initializeTakePhotoController = ({
     pubSubMsgSubscription,
-    pubSubMsgFilter,
     queue,
-    getSetting,
     newErrorMsg,
-    createPhotoPath,
-    uploadPhotoToSlack
+    uploadPhoto,
+    raspicam,
+    savePhoto
 }) => {
 
     const q = queue((msg, cb) => {
@@ -35,16 +29,16 @@ export const initializeTakePhotoController = ({
                     msg,
                     raspicam,
                     savePhoto,
-                    uploadPhotoToSlack
+                    uploadPhoto
                 })
-                    .catch(err => {
-                        newErrorMsg({
-                            messageType: 'FATAL',
-                            data: {
-                                err
-                            }
-                        })
+                .catch(err => {
+                    newErrorMsg({
+                        messageType: 'FATAL',
+                        data: {
+                            err
+                        }
                     })
+                })
             })
             .catch(err => {
                 const msg = {

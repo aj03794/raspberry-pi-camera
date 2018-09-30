@@ -13,12 +13,8 @@ import { getSetting } from './infrastructure/settings'
 import { initializeTakePhotoController } from './interfaces/index'
 import { takePhoto } from './application/use-cases/take-photo'
 import { ensureDirectoryExists, manageFolder } from './infrastructure/utils/fs'
-import { raspicam } from './infrastructure/camera'
-import { createPhotoPath as realCreatePhotoPath } from './infrastructure/utils/photo-name'
-import { savePhoto } from './infrastructure/storage'
-import { slackClient } from './infrastructure/slack'
-
-const { uploadPhotoToSlack } = slackClient()
+import { raspicam as realRaspicam } from './infrastructure/camera'
+import { savePhoto as realSavePhoto, uploadPhoto as realUploadPhoto } from './infrastructure/storage'
 
 let newPubSubMsg,
     pubSubMsgSubscription,
@@ -27,6 +23,26 @@ let newPubSubMsg,
     errorMsgSubscription
 
 process.argv[2] = 'dev'
+
+const doInitializeTakePhotoController = ({
+    raspicam = realRaspicam,
+    savePhoto = realSavePhoto,
+    uploadPhoto = realUploadPhoto
+}) => {
+
+    return initializeTakePhotoController({
+        pubSubMsgSubscription,
+        queue,
+        pubSubMsgFilter,
+        getSetting,
+        newErrorMsg,
+        raspicam,
+        savePhoto,
+        uploadPhoto
+    })
+}
+
+let cooperCamDir = resolvePath(homedir(), 'cooper-cam-photos')
 
 describe('tests', () => {
 
@@ -44,14 +60,27 @@ describe('tests', () => {
 
     })
 
+    afterEach(done => {
+
+        removeSync(cooperCamDir)
+        done()
+
+    })
+
     it('should execute incoming message', done => {
 
-        initializeTakePhotoController({
-            pubSubMsgSubscription,
-            queue,
-            pubSubMsgFilter,
-            getSetting,
-            newErrorMsg
+        let raspicamCalled = 0
+        let savePhotoCalled = 0
+        let uploadPhotoCalled = 0
+
+        const raspicam = () => Promise.resolve(++raspicamCalled)
+        const savePhoto = () => Promise.resolve(++savePhotoCalled)
+        const uploadPhoto = () => Promise.resolve(++savePhotoCalled)
+
+        doInitializeTakePhotoController({
+            raspicam,
+            savePhoto,
+            uploadPhoto
         })
         .then(() => {
                 newPubSubMsg({
@@ -64,15 +93,38 @@ describe('tests', () => {
         })
     })
 
+    it('take-photo/cloud use case should call raspicam, savePhoto, and uploadPhoto', done => {
+
+        let raspicamCalled = 0, savePhotoCalled = 0, uploadPhotoCalled = 0
+
+        const msg = {
+            command: 'take-photo',
+            from: 'cloud'
+        }
+
+        const raspicam = () => Promise.resolve(++raspicamCalled)
+        const savePhoto = () => Promise.resolve(++savePhotoCalled)
+        const uploadPhoto = () => Promise.resolve(++uploadPhotoCalled)
+
+        takePhoto({
+            msg,
+            raspicam,
+            savePhoto,
+            uploadPhoto
+        })
+        .then(() => {
+            console.log('finished')
+            assert.equal(raspicamCalled, 1)
+            assert.equal(uploadPhotoCalled, 1)
+            assert.equal(savePhotoCalled, 1)
+            done()
+        })
+
+    }) 
+
     it('should give error because command is not found', done => {
 
-        initializeTakePhotoController({
-            pubSubMsgSubscription,
-            queue,
-            pubSubMsgFilter,
-            getSetting,
-            newErrorMsg
-        })
+        doInitializeTakePhotoController({})
         .then(() => {
                 newPubSubMsg({
                     command: 'fake command',
@@ -90,13 +142,7 @@ describe('tests', () => {
 
     it('should give error because from prop is not valid', done => {
 
-        initializeTakePhotoController({
-            pubSubMsgSubscription,
-            queue,
-            pubSubMsgFilter,
-            getSetting,
-            newErrorMsg
-        })
+        doInitializeTakePhotoController({})
         .then(() => {
 
                 newPubSubMsg({
@@ -120,17 +166,18 @@ describe('tests', () => {
             command: 'take-photo',
             from: 'cloud'
         }
+
+        console.log('take photo', takePhoto)
        
         takePhoto({
             msg,
-            raspicam,
-            savePhoto
+            raspicam: realRaspicam,
+            savePhoto: realSavePhoto,
+            uploadPhoto: () => Promise.resolve()
         })
         .then(() => {
-            const dir = resolvePath(homedir(), 'cooper-cam-photos')
-            assert.equal(true, existsSync(dir))
-            assert.equal(readdirSync(dir).length, 1)
-            removeSync(dir)
+            assert.equal(true, existsSync(cooperCamDir))
+            assert.equal(readdirSync(cooperCamDir).length, 1)
             done()
         })
     })
@@ -142,77 +189,30 @@ describe('tests', () => {
             from: 'cloud'
         }
 
-        const dir = resolvePath(homedir(), 'cooper-cam-photos')
+        const callTakePhoto = (count) => {
 
-        initializeTakePhotoController({
-            pubSubMsgSubscription,
-            queue,
-            pubSubMsgFilter,
-            getSetting,
-            newErrorMsg
-        })
-        .then(() => {
+            count++
 
-                let called = 0
+            if(count <= 20) {
+                console.log({
+                    count
+                })
+                takePhoto({
+                    msg,
+                    raspicam: realRaspicam,
+                    savePhoto: realSavePhoto,
+                    uploadPhoto: () => Promise.resolve()
+                })
+                .then(() => callTakePhoto(count))
+            }
+            else {
+                const length = readdirSync(cooperCamDir).length
+                assert.equal(length, 10)
+                done()
+            }
 
-                const z = setInterval(() => {
-                    console.log('called', called)
-                    called++
-                    newPubSubMsg({
-                        command: 'take-photo',
-                        from: 'cloud'
-                    })
-                    if (called === 11) {
-                        clearInterval(z)
-                        const length = readdirSync(dir).length
-                        console.log('LENGTH', length)
-                        assert.equal(length, 10)
-                        removeSync(dir)
-                        done()
-                    }
-                }, 100)
-        })
-    })
-
-    it.only('should post picture to slack', done => {
-
-        const msg = {
-            command: 'take-photo',
-            from: 'cloud'
         }
-
-        const dir = resolvePath(homedir(), 'cooper-cam-photos')
-
-        initializeTakePhotoController({
-            pubSubMsgSubscription,
-            queue,
-            pubSubMsgFilter,
-            getSetting,
-            newErrorMsg,
-            uploadPhotoToSlack
-        })
-        .then(() => {
-
-                let called = 0
-
-                const z = setInterval(() => {
-                    console.log('called', called)
-                    called++
-                    newPubSubMsg({
-                        command: 'take-photo',
-                        from: 'cloud'
-                    })
-                    if (called === 1) {
-                        clearInterval(z)
-                        const length = readdirSync(dir).length
-                        console.log('LENGTH', length)
-                        assert.equal(length, 1)
-                        removeSync(dir)
-                        done()
-                    }
-                }, 100)
-        })
+        callTakePhoto(0)
     })
-
 
 })
