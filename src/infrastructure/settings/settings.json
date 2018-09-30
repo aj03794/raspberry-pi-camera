@@ -26,7 +26,7 @@
         },
         "slack": {
             "type": "real",
-            "channels": ["general"]
+            "channels": "general"
         }
     }
 }
