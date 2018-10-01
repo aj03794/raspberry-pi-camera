@@ -1,14 +1,15 @@
 import { createReadStream } from 'fs'
 
-import slack from 'slack'
+import { WebClient } from '@slack/client'
 
 export const execute = ({
     savedPhotoLocation,
     channels
 }) => {
 
+    const slack = new WebClient(process.env.SLACK_OAUTH_TOKEN)
+
     return slack.files.upload({
-        token: process.env.SLACK_OAUTH_TOKEN,
         channels,
         file: createReadStream(savedPhotoLocation)
     })
@@ -20,5 +21,7 @@ export const execute = ({
         console.log('Slack upload file failure', err)
         return err
     })
+
+    
 
 }
