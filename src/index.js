@@ -24,6 +24,8 @@ const {
     subscribe: errMsgSubscription
 } = createSubject()
 
+// newPubSubMsg('hello')
+
 initializeTakePhotoController({
     pubSubMsgSubscription,
     pubSubMsgFilter,

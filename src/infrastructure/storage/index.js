@@ -29,7 +29,7 @@ export const savePhoto = ({
     const locationToSavePhoto = createPhotoPath({ photoDir })
     return savePhotoLocally({ writeFileSync, locationToSavePhoto, photoAsBuffer })
             .then(() => {
-                manageFolder({
+                return manageFolder({
                     location: photoDir,
                     maxFiles: maxNumber
                 })
