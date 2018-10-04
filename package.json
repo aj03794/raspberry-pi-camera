@@ -7,7 +7,7 @@
     "build": "rm -rf dist && webpack --progress --mode development",
     "build-babel": "rm -rf dist && babel src --out-dir dist --ignore 'src/*.test.js' --copy-files",
     "start": "npm run build && node dist/bundle.js",
-    "start-dev": "npm run build-webpack && dist/bundle.js dev",
+    "start-dev": "npm run build && node dist/bundle.js dev",
     "start-dev-babel": "npm run build-babel && node dist/index.js dev",
     "test": "./node_modules/mocha/bin/_mocha --require @babel/register --timeout 20000 src/**/*.test.js",
     "version-patch": "node ./scripts/git-commit.js && npm version patch",
