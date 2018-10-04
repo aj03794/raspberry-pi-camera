@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "rm -rf dist && webpack --progress --mode development",
+    "build-prod": "rm -rf dist && webpack --config webpack.config.js --progress --mode development",
+    "build-dev": "rm -rf dist && webpack --config webpack.dev.config.js --progress --mode development",
     "build-babel": "rm -rf dist && babel src --out-dir dist --ignore 'src/*.test.js' --copy-files",
-    "start": "npm run build && node dist/bundle.js",
-    "start-dev": "npm run build && node dist/bundle.js dev",
+    "start": "npm run build-prod && node dist/bundle.js",
+    "start-dev": "npm run build-dev && node dist/bundle.js dev",
     "start-dev-babel": "npm run build-babel && node dist/index.js dev",
     "test": "./node_modules/mocha/bin/_mocha --require @babel/register --timeout 20000 src/**/*.test.js",
     "version-patch": "node ./scripts/git-commit.js && npm version patch",
@@ -36,11 +37,8 @@
     "@google-cloud/pubsub": "^0.18.0",
     "@slack/client": "^4.6.0",
     "async": "^2.6.0",
-    "axios": "^0.18.0",
     "date-time": "^2.1.0",
     "fs-extra": "^5.0.0",
-    "http": "0.0.0",
-    "ip": "^1.1.5",
     "raspicam": "^0.2.14",
     "subject-with-filter": "^1.0.0"
   }

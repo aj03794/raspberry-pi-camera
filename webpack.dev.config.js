@@ -15,14 +15,14 @@ module.exports = {
     new CopyWebpackPlugin([
         {
             context: path.resolve(__dirname, 'src', 'infrastructure', 'settings'),
-            from: 'settings.json',
+            from: '*.json',
             to: path.resolve('dist')
         },
         {
-          // context: path.resolve(__dirname),
-          from: 'package.json',
-          to: path.resolve('dist')
-      }
+            context: path.resolve(__dirname, 'src', 'infrastructure', 'camera'),
+            from: '*.jpg',
+            to: path.resolve('dist')
+        }
     ])
   ],
   module: {
