@@ -8,6 +8,7 @@
     "build-dev": "rm -rf dist && webpack --config webpack.dev.config.js --progress --mode development",
     "build-babel": "rm -rf dist && babel src --out-dir dist --ignore 'src/*.test.js' --copy-files",
     "start": "npm run build-prod && node dist/bundle.js",
+    "start-babel": "npm run build-babel && node dist/index.js",
     "start-dev": "npm run build-dev && node dist/bundle.js dev",
     "start-dev-babel": "npm run build-babel && node dist/index.js dev",
     "test": "./node_modules/mocha/bin/_mocha --require @babel/register --timeout 20000 src/**/*.test.js",
@@ -31,7 +32,8 @@
     "copy-webpack-plugin": "^4.5.2",
     "mocha": "^5.2.0",
     "webpack": "^4.20.2",
-    "webpack-cli": "^3.1.2"
+    "webpack-cli": "^3.1.2",
+    "webpack-node-externals": "^1.7.2"
   },
   "dependencies": {
     "@google-cloud/pubsub": "^0.18.0",
