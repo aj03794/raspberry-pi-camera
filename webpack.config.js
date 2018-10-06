@@ -1,7 +1,6 @@
 const path = require('path')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const webpack = require('webpack')
-const nodeExternals = require('webpack-node-externals')
 
 module.exports = {
   entry: ['@babel/polyfill', './src/index.js'],
@@ -37,8 +36,7 @@ module.exports = {
 		__dirname: false,
 		__filename: false
   },
-  // externals: [nodeExternals()]
-  externals: {
-    pubsub: "@google-cloud"
-  }
+  externals: [
+    "@google-cloud/pubsub",
+  ]
 };

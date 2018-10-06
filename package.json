@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build-prod": "rm -rf dist && webpack --config webpack.config.js --progress --mode development",
+    "build-prod": "rm -rf dist && webpack --config webpack.config.js --mode development",
     "build-dev": "rm -rf dist && webpack --config webpack.dev.config.js --progress --mode development",
     "build-babel": "rm -rf dist && babel src --out-dir dist --ignore 'src/*.test.js' --copy-files",
     "start": "npm run build-prod && node dist/bundle.js",

@@ -12,8 +12,11 @@ export const getSetting = (settingToRetrieve) => {
   if (process.argv[2] === 'test') {
     fileName = `settings.test.json`
   }
-  console.log('fileName', fileName)
+  console.log('fileName', fs.existsSync(resolvePath(__dirname, fileName)))
   try {
+    console.log('ASDASDADSD')
+    console.log('dirname', __dirname)
+    console.log('')
     setting = JSON.parse(fs.readFileSync(resolvePath(__dirname, fileName)))[settingToRetrieve]
   } catch (e) {
 		console.log('Error getSetting', e)

@@ -7,6 +7,8 @@ export const real = ({
   newPubSubMsg,
 }) => {
 
+    console.log('asdfadfs')
+
     const {
         googleApplicationCredentials: gcpCreds,
         baseSubscription
