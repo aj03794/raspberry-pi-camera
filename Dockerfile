@@ -4,11 +4,11 @@ FROM resin/rpi-raspbian
 # RUN sudo apt-get update
 # RUN sudo apt-get install wget
 
-RUN wget https://nodejs.org/dist/v10.11.0/node-v10.11.0-linux-armv6l.tar.gz
-RUN tar -xzf node-v10.11.0-linux-armv6l.tar.gz
-RUN cp -R  node-v10.11.0-linux-armv6l/* /usr/local/
-RUN rm -rf node-v10.11.0-linux-armv6l.tar.gz
-RUN rm -rf node-v10.11.0-linux-armv6l
+# RUN wget https://nodejs.org/dist/v10.11.0/node-v10.11.0-linux-armv6l.tar.gz
+# RUN tar -xzf node-v10.11.0-linux-armv6l.tar.gz
+# RUN cp -R  node-v10.11.0-linux-armv6l/* /usr/local/
+# RUN rm -rf node-v10.11.0-linux-armv6l.tar.gz
+# RUN rm -rf node-v10.11.0-linux-armv6l
 
 ## Create base directory
 RUN mkdir /raspberry-pi-camera
