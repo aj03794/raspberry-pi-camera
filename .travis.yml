@@ -2,6 +2,10 @@ sudo: required
 
 language: node_js
 
+cache:
+  directories:
+    - "node_modules"
+
 node_js: 
   - "stable"
 services:
@@ -10,19 +14,17 @@ services:
 env:
   global:
     - IMAGE_NAME=armv7/armhf-ubuntu
+    - USER_NAME=aj03794
 
 before_script:
+  - echo "$IMAGE_NAME" "$USER_NAME"
   - docker pull "$IMAGE_NAME"
+  - docker build -t "$USER_NAME"/"$IMAGE_NAME"
 
 before_install:
-  - docker pull armv7/armhf-ubuntu
 
 install:
   - npm install
-
-cache:
-  directories:
-    - "node_modules"
 
 script:
   - docker run "$IMAGE_NAME" npm test
