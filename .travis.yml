@@ -1,6 +1,18 @@
+sudo: required
+
 language: node_js
+
 node_js: 
   - "stable"
+services:
+  - docker
+
+before_install:
+  - docker pull armv7/armhf-ubuntu
+
 cache:
   directories:
     - "node_modules"
+
+script:
+  - docker run npm test
