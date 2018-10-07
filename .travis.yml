@@ -8,6 +8,7 @@ cache:
 
 node_js: 
   - "stable"
+  
 services:
   - docker
 
@@ -17,10 +18,10 @@ env:
     - USER_NAME=aj03794
 
 before_script:
-  - printenv
-  - echo IMAGE_NAME USER_NAME
-  - docker pull armv7/armhf-ubuntu
-  - docker build -t aj03794/armv7/armhf-ubuntu
+  # - printenv
+  # - echo IMAGE_NAME USER_NAME
+  # - docker pull armv7/armhf-ubuntu
+  - docker build -t test .
   - docker images
 
 before_install:
@@ -29,4 +30,4 @@ install:
   - npm install
 
 script:
-  - docker run "$IMAGE_NAME" npm test
+  - docker run test3 /bin/sh -c "npm run test"
