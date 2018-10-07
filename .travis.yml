@@ -19,8 +19,9 @@ env:
 before_script:
   - printenv
   - echo IMAGE_NAME USER_NAME
-  - docker pull "$IMAGE_NAME"
-  - docker build -t "$USER_NAME"/"$IMAGE_NAME"
+  - docker pull armv7/armhf-ubuntu
+  - docker build -t aj03794/armv7/armhf-ubuntu
+  - docker images
 
 before_install:
 
