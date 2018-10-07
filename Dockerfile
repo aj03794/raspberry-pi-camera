@@ -1,7 +1,7 @@
 ## Specifies the base image we're extending
 FROM resin/rpi-raspbian
 
-RUN sudo apt-get update
+RUN sudo apt-get update -y
 RUN sudo apt-get install wget -y
 
 RUN wget https://nodejs.org/dist/v10.11.0/node-v10.11.0-linux-armv6l.tar.gz
