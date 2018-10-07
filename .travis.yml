@@ -12,18 +12,13 @@ node_js:
 services:
   - docker
 
-before_script:
-  - docker build -t test .
-  # - docker images
-
 before_install:
   - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
   - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
   - sudo apt-get update
   - sudo apt-get -y install docker-ce
-
-install:
-  - npm install
+  - docker build -t test .
+  - docker images
 
 script:
   - docker run test /bin/sh -c "npm run test"
