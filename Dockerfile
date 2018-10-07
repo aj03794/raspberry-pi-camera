@@ -1,5 +1,5 @@
 ## Specifies the base image we're extending
-FROM ubuntu:14.04
+FROM resin/rpi-raspbian
 
 RUN sudo apt-get update
 RUN sudo apt-get install wget -y
