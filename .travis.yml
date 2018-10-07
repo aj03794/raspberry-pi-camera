@@ -2,13 +2,6 @@ sudo: required
 
 language: node_js
 
-cache:
-  directories:
-    - "node_modules"
-
-node_js: 
-  - "stable"
-
 services:
   - docker
 
