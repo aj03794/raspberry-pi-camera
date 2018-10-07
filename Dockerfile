@@ -2,7 +2,7 @@
 FROM ubuntu:14.04
 
 RUN sudo apt-get update
-# RUN sudo apt-get install wget
+RUN sudo apt-get install wget
 
 RUN wget https://nodejs.org/dist/v10.11.0/node-v10.11.0-linux-armv6l.tar.gz
 RUN tar -xzf node-v10.11.0-linux-armv6l.tar.gz
