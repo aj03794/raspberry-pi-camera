@@ -19,3 +19,6 @@ WORKDIR /raspberry-pi-camera
 ## Copy entire source directory minus contents specified in .dockerignore file
 COPY . .
 RUN npm install
+RUN npm run build-babel
+RUN cp -r node_modules dist/
+RUN zip raspberry-pi-camera -r dist/
