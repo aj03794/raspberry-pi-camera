@@ -9,7 +9,6 @@ RUN tar -xzf node-v10.11.0-linux-armv6l.tar.gz
 RUN cp -R  node-v10.11.0-linux-armv6l/* /usr/local/
 RUN rm -rf node-v10.11.0-linux-armv6l.tar.gz
 RUN rm -rf node-v10.11.0-linux-armv6l
-RUN npm i -g babel
 
 ## Create base directory
 RUN mkdir /raspberry-pi-camera
