@@ -15,13 +15,14 @@ script:
   - docker run test /bin/sh -c "npm run test"
 
 before_deploy:
+  - docker run /bin/sh -c "npm run build-babel"
   # Set up git user name and tag this commit
   - git config --local user.name "aj03794"
   - git config --local user.email "adamjohnston151@yahoo.com"
   - git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
-  - npm run build-babel
   - cp -r node_modules dist/
   - zip raspberry-pi-camera -r dist/
+
 deploy:
   provider: releases
   api_key: GITHUB_OAUTH_TOKEN
