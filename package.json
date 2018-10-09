@@ -6,7 +6,7 @@
   "scripts": {
     "build": "rm -rf dist && webpack --progress --mode development",
     "build-babel": "rm -rf dist && babel src --out-dir dist --ignore 'src/*.test.js' --copy-files",
-    "deploy": "zip raspberry-pi-camera -r dist/ node_modules/ && ./scripts/deploy.js",
+    "deploy": "npm run version-patch && npm run build-babel && zip raspberry-pi-camera -r dist/ node_modules/ && ./scripts/deploy.js",
     "start": "npm run build && node dist/bundle.js",
     "start-dev": "npm run build && node dist/bundle.js dev",
     "start-dev-babel": "npm run build-babel && node dist/index.js dev",

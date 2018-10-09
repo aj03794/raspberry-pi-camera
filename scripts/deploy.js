@@ -25,7 +25,7 @@ const publishGithubArtifact = () => {
             return process.exit(1)
         }
         console.log({
-            msg: `${repoName} version ${version} release created successfully`
+            msg: `${repo} version ${version} release created successfully`
         })
     })
 }
