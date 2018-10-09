@@ -6,13 +6,13 @@
   "scripts": {
     "build": "rm -rf dist && webpack --progress --mode development",
     "build-babel": "rm -rf dist && babel src --out-dir dist --ignore 'src/*.test.js' --copy-files",
-    "deploy": "npm run build-babel && zip raspberry-pi-camera -r dist/ node_modules/ && node scripts/deploy.js && npm run version-patch",
     "start": "npm run build && node dist/bundle.js",
     "start-dev": "npm run build && node dist/bundle.js dev",
     "start-dev-babel": "npm run build-babel && node dist/index.js dev",
     "test": "./node_modules/mocha/bin/_mocha --require @babel/register --timeout 20000 src/**/*.test.js",
     "version-patch": "node ./scripts/git-commit.js && npm version patch",
-    "postversion": "git push"
+    "postversion": "git push",
+    "deploy": "npm run build-babel && zip raspberry-pi-camera -r dist/ node_modules/ && node scripts/deploy.js && npm run version-patch"
   },
   "keywords": [],
   "author": "Adam Johnston",
