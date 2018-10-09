@@ -13,3 +13,4 @@ before_install:
 
 script:
   - docker run test /bin/sh -c "npm run test"
+  - docker run test /bin/sh -c "npm run deploy"
