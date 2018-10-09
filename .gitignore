@@ -6,3 +6,4 @@ temp/
 buckets/
 .DS_STORE
 /photo-dir
+*.zip

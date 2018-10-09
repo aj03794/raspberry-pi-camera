@@ -3,6 +3,8 @@ FROM resin/rpi-raspbian
 
 RUN sudo apt-get update -y
 RUN sudo apt-get install wget -y
+RUN sudo apt-get install zip -y
+RUN sudo apt-get uninstall zip -y
 
 RUN wget https://nodejs.org/dist/v10.11.0/node-v10.11.0-linux-armv6l.tar.gz
 RUN tar -xzf node-v10.11.0-linux-armv6l.tar.gz
@@ -20,5 +22,3 @@ WORKDIR /raspberry-pi-camera
 COPY . .
 RUN npm install
 RUN npm run build-babel
-RUN cp -r node_modules dist/
-RUN zip raspberry-pi-camera -r dist/

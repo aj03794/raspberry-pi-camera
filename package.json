@@ -6,6 +6,7 @@
   "scripts": {
     "build": "rm -rf dist && webpack --progress --mode development",
     "build-babel": "rm -rf dist && babel src --out-dir dist --ignore 'src/*.test.js' --copy-files",
+    "deploy": "zip raspberry-pi-camera -r dist/ node_modules/ && ./scripts/deploy.js",
     "start": "npm run build && node dist/bundle.js",
     "start-dev": "npm run build && node dist/bundle.js dev",
     "start-dev-babel": "npm run build-babel && node dist/index.js dev",
@@ -29,6 +30,7 @@
     "chai": "^4.1.2",
     "copy-webpack-plugin": "^4.5.2",
     "mocha": "^5.2.0",
+    "publish-release": "^1.6.0",
     "webpack": "^4.20.2",
     "webpack-cli": "^3.1.2"
   },
