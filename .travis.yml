@@ -15,4 +15,4 @@ script:
   - docker run test /bin/sh -c "npm run test"
 
 deploy:
-   - docker run test /bin/sh -c "npm run deploy"
+  - docker run test /bin/sh -c "npm run deploy"
