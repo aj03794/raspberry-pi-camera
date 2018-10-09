@@ -6,7 +6,7 @@
   "scripts": {
     "build": "rm -rf dist && webpack --progress --mode development",
     "build-babel": "rm -rf dist && babel src --out-dir dist --ignore 'src/*.test.js' --copy-files",
-    "deploy": "npm run version-patch && npm run build-babel && zip raspberry-pi-camera -r dist/ node_modules/ && ./scripts/deploy.js",
+    "deploy": "rm -rf node_modules && npm install --production && npm run build-babel && zip raspberry-pi-camera -r dist/ node_modules/ && ./scripts/deploy.js && npm run version-patch ",
     "start": "npm run build && node dist/bundle.js",
     "start-dev": "npm run build && node dist/bundle.js dev",
     "start-dev-babel": "npm run build-babel && node dist/index.js dev",
@@ -38,11 +38,8 @@
     "@google-cloud/pubsub": "^0.18.0",
     "@slack/client": "^4.6.0",
     "async": "^2.6.0",
-    "axios": "^0.18.0",
     "date-time": "^2.1.0",
     "fs-extra": "^5.0.0",
-    "http": "0.0.0",
-    "ip": "^1.1.5",
     "raspicam": "^0.2.14",
     "subject-with-filter": "^1.0.0"
   }
