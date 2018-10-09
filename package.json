@@ -12,7 +12,7 @@
     "test": "./node_modules/mocha/bin/_mocha --require @babel/register --timeout 20000 src/**/*.test.js",
     "version-patch": "node ./scripts/git-commit.js && npm version patch",
     "postversion": "git push",
-    "deploy": "npm run build-babel && zip raspberry-pi-camera -r dist/ node_modules/ && node scripts/deploy.js && npm run version-patch"
+    "deploy": "npm run build-babel && zip raspberry-pi-camera -r dist/ node_modules/ && node scripts/deploy.js && npm version patch"
   },
   "keywords": [],
   "author": "Adam Johnston",
