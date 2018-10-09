@@ -9,7 +9,7 @@ services:
 
 before_install:
   - docker run --rm --privileged multiarch/qemu-user-static:register --reset
-  - docker build -t test .
+  - docker build --build-arg github_token=$GITHUB_OAUTH_TOKEN -t test .
 
 script:
   - docker run test /bin/sh -c "npm run test"
