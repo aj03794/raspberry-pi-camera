@@ -16,4 +16,4 @@ WORKDIR /raspberry-pi-camera
 
 ## Copy entire source directory minus contents specified in .dockerignore file
 COPY . .
-RUN npm install
+RUN npm install --unsafe-perm
