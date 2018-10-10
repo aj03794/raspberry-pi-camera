@@ -10,6 +10,9 @@ RUN sudo apt-get install wget -y
 RUN sudo apt-get install zip -y
 RUN sudo apt-get install git -y
 
+RUN git config --global user.name "aj03794"
+RUN git config --global user.email "adamjohnston151@yahoo.com"
+
 RUN wget -q https://nodejs.org/dist/v10.11.0/node-v10.11.0-linux-armv6l.tar.gz
 RUN tar -xzf node-v10.11.0-linux-armv6l.tar.gz
 RUN cp -R  node-v10.11.0-linux-armv6l/* /usr/local/
