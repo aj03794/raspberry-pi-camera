@@ -6,6 +6,7 @@ const repo = 'raspberry-pi-camera'
 const owner = 'aj03794'
 const version = require('../package.json').version
 
+console.log('New version', version)
 
 const publishGithubArtifact = () => {
 
@@ -33,8 +34,8 @@ const publishGithubArtifact = () => {
 const createOpts = () => {
 	return {
         token: process.env.GITHUB_OAUTH_TOKEN,
-        owner: 'aj03794',
-        repo: repo,
+        owner,
+        repo,
         tag: version,
         name: repo,
         draft: false,
