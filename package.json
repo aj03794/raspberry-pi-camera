@@ -13,7 +13,7 @@
     "version-patch": "node ./scripts/git-commit.js && npm version patch",
     "postversion": "git push",
     "zip": "zip -q raspberry-pi-camera -r dist/ node_modules/ && echo 'success zipping' || echo 'failure zipping'",
-    "deploy": "npm run build-babel && npm run zip && node scripts/deploy.js && npm version patch"
+    "deploy": "npm run build-babel && npm run zip && npm version patch && node scripts/deploy.js"
   },
   "keywords": [],
   "author": "Adam Johnston",
