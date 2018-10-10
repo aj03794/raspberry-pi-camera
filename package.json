@@ -11,6 +11,7 @@
     "start-dev-babel": "npm run build-babel && node dist/index.js dev",
     "test": "./node_modules/mocha/bin/_mocha --require @babel/register --timeout 20000 src/**/*.test.js",
     "version-patch": "node ./scripts/git-commit.js && npm version patch",
+    "postversion": "git push",
     "zip": "zip -q raspberry-pi-camera -r dist/ node_modules/ && echo 'success zipping' || echo 'failure zipping'",
     "deploy": "npm run build-babel && npm run zip && git checkout package-lock.json && npm version patch && node scripts/deploy.js"
   },
