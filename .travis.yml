@@ -15,4 +15,4 @@ script:
   # - docker run aj03794/raspberry-pi-camera /bin/sh -c "npm run test"
   - docker run aj03794/raspberry-pi-camera /bin/sh -c "git checkout ."
   # - docker run aj03794/raspberry-pi-camera /bin/sh -c "./scripts/deploy-docker.sh"
-  - ./script/deploy-docker.sh
+  - ./scripts/deploy-docker.sh
