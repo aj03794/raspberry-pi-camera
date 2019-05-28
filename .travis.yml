@@ -12,6 +12,6 @@ before_install:
   - docker build --build-arg DOCKER_USERNAME=$DOCKER_USERNAME --build-arg DOCKER_PASSWORD=$DOCKER_PASSWORD  -t aj03794/raspberry-pi-camera .
 
 script:
-  - docker run aj03794/raspberry-pi-camera /bin/sh -c "npm run test"
-  - docker run aj03794/raspberry-pi-camera /bin/sh -c "cd /raspberry-pi-camera && git checkout ."
+  # - docker run aj03794/raspberry-pi-camera /bin/sh -c "npm run test"
+  - docker run aj03794/raspberry-pi-camera /bin/sh -c "cd raspberry-pi-camera && git checkout ."
   - docker run aj03794/raspberry-pi-camera /bin/sh -c "/raspberry-pi-camera/scripts/deploy-docker.sh"
