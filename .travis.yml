@@ -9,7 +9,8 @@ services:
 
 before_install:
   - docker run --rm --privileged multiarch/qemu-user-static:register --reset
-  - docker build --build-arg github_token=$GITHUB_OAUTH_TOKEN -t test .
+  - docker build --build-arg DOCKER_USERNAME=$DOCKER_USERNAME --build-arg DOCKER_PASSWORD=$DOCKER_PASSWORD  -t raspberry-pi-camera .
 
 script:
-  - docker run test /bin/sh -c "npm run test"
+  - docker run aj03794/raspberry-pi-camera /bin/sh "npm run test"
+  - docker run aj03794/raspberry-pi-camera /bin/sh "/raspberry-pi-camera/scripts/deploy-docker.sh"
