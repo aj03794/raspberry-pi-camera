@@ -19,12 +19,12 @@
   "author": "Adam Johnston",
   "license": "ISC",
   "devDependencies": {
-    "@babel/cli": "^7.1.2",
-    "@babel/core": "^7.1.2",
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.5",
     "@babel/plugin-syntax-dynamic-import": "^7.0.0",
     "@babel/plugin-syntax-object-rest-spread": "^7.0.0",
     "@babel/polyfill": "^7.0.0",
-    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-env": "^7.4.5",
     "@babel/register": "^7.0.0",
     "babel-loader": "^8.0.4",
     "babel-plugin-dynamic-import-node": "^2.1.0",
@@ -36,7 +36,7 @@
     "webpack-cli": "^3.1.2"
   },
   "dependencies": {
-    "@google-cloud/pubsub": "^0.18.0",
+    "@google-cloud/pubsub": "^0.29.1",
     "@slack/client": "^4.6.0",
     "async": "^2.6.0",
     "date-time": "^2.1.0",
