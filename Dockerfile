@@ -1,6 +1,6 @@
 ## Specifies images we need in our docker image
 FROM balenalib/rpi-raspbian
-FROM node
+FROM node:10.15.3
 
 ARG github_token
 RUN echo github_token
