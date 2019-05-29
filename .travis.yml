@@ -19,6 +19,7 @@ script:
   # - npm install
   - git config --global user.email "travis@travis-ci.org"
   - git config --global user.name "Travis CI"
+  - git remote -v
   - git push https://${GITHUB_OAUTH_TOKEN}@github.com/aj03794/raspberry-pi-camera.git master
   - IMAGE=raspberry-pi-camera
   - version=$(npm version patch -m "v%s [ci skip]")
