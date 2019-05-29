@@ -6,6 +6,7 @@ IMAGE=raspberry-pi-camera
 version=$(npm version patch)
 version=$(echo $version | cut -c 2-)
 echo "version: $version"
+docker login -u="$DOCKER_USER" -p="$DOCKER_PASS"
 docker tag $USERNAME/$IMAGE:latest $USERNAME/$IMAGE:$version
 # # push it
 docker push $USERNAME/$IMAGE:latest
