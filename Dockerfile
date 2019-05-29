@@ -2,10 +2,6 @@
 FROM balenalib/rpi-raspbian
 FROM node:10.15.3
 
-ARG DOCKER_USERNAME
-RUN echo DOCKER_USERNAME
-ARG DOCKER_PASSWORD
-
 ## Create base directory
 RUN mkdir /raspberry-pi-camera
 
