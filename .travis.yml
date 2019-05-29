@@ -18,7 +18,7 @@ script:
   - docker run --rm --privileged multiarch/qemu-user-static:register --reset
   # - npm install
   - IMAGE=raspberry-pi-camera
-  - version=$(npm version patch -m "v%s [ci skip]")
+  - version=$(npm version patch)
   - version=$(echo $version | cut -c 2-)
   - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
   - docker build --build-arg version=version --build-arg DOCKER_USERNAME=$DOCKER_USERNAME --build-arg DOCKER_PASSWORD=$DOCKER_PASSWORD  -t aj03794/raspberry-pi-camera .
