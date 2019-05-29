@@ -11,10 +11,9 @@ before_install:
 
 script:
   - docker run --rm --privileged multiarch/qemu-user-static:register --reset
-  - npm install
+  # - npm install
   - docker build --build-arg DOCKER_USERNAME=$DOCKER_USERNAME --build-arg DOCKER_PASSWORD=$DOCKER_PASSWORD  -t aj03794/raspberry-pi-camera .
-  - npm run test
-  - git checkout .
-  - docker build -t 
-  - docker login -u="$DOCKER_USER" -p="$DOCKER_PASSWORD"
+  - docker run aj03794/raspberry-pi-camera /bin/sh -c "npm run test"
+  # - docker run aj03794/raspberry-pi-camera /bin/sh -c "./scripts/deploy-docker.sh"
+  - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
   # - ./scripts/deploy-docker.sh
