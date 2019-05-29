@@ -2,14 +2,6 @@
 FROM balenalib/rpi-raspbian
 FROM node:10.15.3
 
-RUN apt-get update -y
-RUN apt-get upgrade -y
-RUN apt-get install git -y
-
-ARG github_token
-RUN echo github_token
-# # ENV GITHUB_OAUTH_TOKEN=$github_token
-
 ARG DOCKER_USERNAME
 RUN echo DOCKER_USERNAME
 ARG DOCKER_PASSWORD
