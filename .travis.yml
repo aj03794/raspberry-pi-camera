@@ -20,6 +20,7 @@ script:
   - git config --global user.email "travis@travis-ci.org"
   - git config --global user.name "Travis CI"
   - git remote -v
+  - git remote rm origin
   - git remote add origin https://${CI_TOKEN}@github.com/aj03794/raspberry-pi-camera.git
   - git push -u origin master
   - IMAGE=raspberry-pi-camera
