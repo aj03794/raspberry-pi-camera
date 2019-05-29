@@ -16,4 +16,7 @@ script:
   # - docker run aj03794/raspberry-pi-camera /bin/sh -c "npm run test"
   # - docker run aj03794/raspberry-pi-camera /bin/sh -c "./scripts/deploy-docker.sh"
   - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-  # - ./scripts/deploy-docker.sh
+  # - docker tag $USERNAME/$IMAGE:latest $USERNAME/$IMAGE:$version
+  # - docker push $USERNAME/$IMAGE:latest
+  # - docker push $USERNAME/$IMAGE:$version
+  - ./scripts/deploy-docker.sh
