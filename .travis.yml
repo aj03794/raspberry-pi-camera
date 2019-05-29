@@ -19,7 +19,7 @@ script:
   # - npm install
   - git config --global user.email "travis@travis-ci.org"
   - git config --global user.name "Travis CI"
-  - git remote add origin https://github.com/aj03794/raspberry-pi-camera.git
+  - git push origin master
   - IMAGE=raspberry-pi-camera
   - version=$(npm version patch -m "v%s [ci skip]")
   - version=$(echo $version | cut -c 2-)
