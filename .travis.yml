@@ -19,7 +19,7 @@ script:
   # - npm install
   - git config --global user.email "travis@travis-ci.org"
   - git config --global user.name "aj03794"
-  - git config --global user.password $GITHUB_PASSWORD
+  - git config --global user.password "${GITHUB_PASSWORD}"
   - git remote -v
   # - git remote rm origin
   # - git remote add raspberry-pi-camera https://${CI_TOKEN}@github.com/raspberry-pi-camera/resources.git > /dev/null 2>&1
