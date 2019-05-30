@@ -12,31 +12,22 @@ node_js:
   - "node"
 
 
-before_install:
 
 script:
   - docker run --rm --privileged multiarch/qemu-user-static:register --reset
-  # - npm install
-  - git config --global user.email "adamjohnston151@yahoo.com"
-  - git config --global user.name "aj03794"
-  - git remote -v
-  # - git remote rm origin
-  # - git remote add raspberry-pi-camera https://${CI_TOKEN}@github.com/raspberry-pi-camera/resources.git > /dev/null 2>&1
-  # - git remote -v
   - version=$(npm version patch -m "v%s [ci skip]")
   - version=$(echo $version | cut -c 2-)
-  # - git push origin HEAD:master
-  # - git push -u origin master
-  # - IMAGE=raspberry-pi-camera
-  # - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-  # - docker build --build-arg version=version --build-arg DOCKER_USERNAME=$DOCKER_USERNAME --build-arg DOCKER_PASSWORD=$DOCKER_PASSWORD  -t aj03794/raspberry-pi-camera .
+  - IMAGE=raspberry-pi-camera
+  - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+  - docker build --build-arg version=version --build-arg DOCKER_USERNAME=$DOCKER_USERNAME --build-arg DOCKER_PASSWORD=$DOCKER_PASSWORD  -t aj03794/raspberry-pi-camera .
   # - docker run aj03794/raspberry-pi-camera /bin/sh -c "npm run test"
   # - docker run aj03794/raspberry-pi-camera /bin/sh -c "./scripts/deploy-docker.sh"
-  # - echo $IMAGE
-  # - echo $version
-  # - docker tag $DOCKER_USERNAME/$IMAGE:latest $DOCKER_USERNAME/$IMAGE:$version
-  # - docker push $DOCKER_USERNAME/$IMAGE:latest
-  # - docker push $DOCKER_USERNAME/$IMAGE:$version
+
+  - docker tag $DOCKER_USERNAME/$IMAGE:latest $DOCKER_USERNAME/$IMAGE:$version
+  - docker push $DOCKER_USERNAME/$IMAGE:latest
+  - docker push $DOCKER_USERNAME/$IMAGE:$version
 
 after_success:
+    - git config --global user.email "travis@travis-ci.com"
+    - git config --global user.name "Travis CI"
     - git push https://aj03794:${CI_TOKEN}@github.com/aj03794/raspberry-pi-camera.git HEAD:master
