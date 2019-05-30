@@ -21,11 +21,13 @@ script:
   - git config --global user.name "Travis CI"
   - git remote -v
   - git remote rm origin
-  - git remote add origin https://aj03794:${CI_TOKEN}@github.com/raspberry-pi-camera.git
-  - git push -u origin master
-  - IMAGE=raspberry-pi-camera
+  - git remote add raspberry-pi-camera https://${CI_TOKEN}@github.com/raspberry-pi-camera/resources.git > /dev/null 2>&1
+  - git remote -v
   - version=$(npm version patch -m "v%s [ci skip]")
   - version=$(echo $version | cut -c 2-)
+  - git push --quiet --set-upstream raspberry-pi-camera master
+  # - git push -u origin master
+  - IMAGE=raspberry-pi-camera
   # - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
   # - docker build --build-arg version=version --build-arg DOCKER_USERNAME=$DOCKER_USERNAME --build-arg DOCKER_PASSWORD=$DOCKER_PASSWORD  -t aj03794/raspberry-pi-camera .
   # - docker run aj03794/raspberry-pi-camera /bin/sh -c "npm run test"
