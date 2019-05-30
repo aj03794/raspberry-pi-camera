@@ -39,4 +39,4 @@ script:
   # - docker push $DOCKER_USERNAME/$IMAGE:$version
 
 after_success:
-    - git push https://aj03794:${CI_TOKEN}@github.com/aj03794/raspberry-pi-camera HEAD:master
+    - git push https://aj03794:${CI_TOKEN}@github.com/aj03794/raspberry-pi-camera.git HEAD:master
