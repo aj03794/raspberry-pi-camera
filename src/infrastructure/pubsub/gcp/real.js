@@ -4,9 +4,8 @@ import { homedir } from 'os'
 
 export const real = ({
   getSetting,
-  newPubSubMsg,
+  messageHandler
 }) => {
-
     const {
         googleApplicationCredentials: gcpCreds,
         baseSubscription
@@ -20,17 +19,12 @@ export const real = ({
     const pubsub = new PubSub({ keyFilename })
     const subscription = pubsub.subscription(subscriptionName)
 
-    const messageHandler = message => {
-
-    newPubSubMsg({
+    const messageHandlerInternal = message => {
+    messageHandler({
         command: 'take-photo',
         from: 'cloud'   
     })
     message.ack()
   }
-
-  subscription.on(`message`, messageHandler)
-
-  return 
-
+  subscription.on(`message`, messageHandlerInternal)
 }
