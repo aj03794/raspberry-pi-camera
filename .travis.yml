@@ -18,7 +18,7 @@ script:
   - docker run --rm --privileged multiarch/qemu-user-static:register --reset
   # - npm install
   - git config --global user.email "travis@travis-ci.org"
-  - git config --global user.name "Travis CI"
+  - git config --global user.name "aj03794"
   - git config --global user.password $GITHUB_PASSWORD
   - git remote -v
   # - git remote rm origin
