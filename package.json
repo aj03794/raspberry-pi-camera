@@ -35,7 +35,7 @@
   "dependencies": {
     "@google-cloud/pubsub": "^0.29.1",
     "@slack/client": "^4.6.0",
-    "async": "^2.6.0",
+    "async": "^2.6.4",
     "date-time": "^2.1.0",
     "fs-extra": "^5.0.0",
     "subject-with-filter": "^1.0.0"
