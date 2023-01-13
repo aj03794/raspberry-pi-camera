@@ -30,7 +30,7 @@
     "mocha": "^5.2.0",
     "publish-release": "^1.6.0",
     "webpack": "^4.20.2",
-    "webpack-cli": "^3.1.2"
+    "webpack-cli": "^3.3.12"
   },
   "dependencies": {
     "@google-cloud/pubsub": "^0.29.1",
